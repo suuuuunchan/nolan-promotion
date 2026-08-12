@@ -2,7 +2,8 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!-- 375 고정 캔버스를 기기 폭에 맞게 스케일 — 375보다 넓은 폰에서 좌우 거터 방지 -->
+<meta name="viewport" content="width=375" />
 <title>놀란 프로모션</title>
 <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
 <style>
@@ -10,7 +11,8 @@
     --bg: #080100;
     --card: #161616;
     --card-prize: #262626;
-    --line: rgba(255, 255, 255, 0.2);
+    /* 불투명 그레이 — 반투명 화이트는 레드 그라디언트 위에서 붉게 비쳐 스트로크가 불균형해 보인다 */
+    --line: #3a3a3a;
     --red: #ff301d;
     --red-deep: #ca040e;
     --red-point: #ff5546;
@@ -167,6 +169,7 @@
     font-size: 13px;
     font-weight: 600;
     color: #fff;
+    font-variant-numeric: tabular-nums; /* 초가 바뀔 때 숫자 폭 흔들림 방지 */
   }
 
   /* 참여하기 — 플로우 CTA와 동일 스펙(335×57, 20px, 드롭섀도) + 활성/프레스 상태.
@@ -333,7 +336,7 @@
 
   .step-head {
     width: 100%;
-    min-height: 91px;
+    min-height: 105px;
     background: none;
     border: none;
     font-family: inherit;
@@ -341,14 +344,15 @@
     text-align: left;
     cursor: pointer;
     display: flex;
-    align-items: center;
+    /* 넘버 칩은 텍스트 상단 라인에 맞춘다 (1902:989) — 카드 총높이 107 */
+    align-items: flex-start;
     gap: 19px;
-    /* 세로 패딩 15px — 텍스트 실측(60.3px)이 min-height 91을 넘지 않게. 카드 총높이 93 고정 */
-    padding: 15px 44px 15px 21px;
+    padding: 20px 44px 20px 21px;
     position: relative;
   }
   .step-num {
     flex: none;
+    margin-top: 1px; /* 타이틀 첫 줄 라인과 시각 정렬 (디자인 y+1) */
     width: 26px;
     height: 26px;
     background: var(--red);
@@ -361,8 +365,8 @@
     line-height: 1;
   }
   .step-texts { display: flex; flex-direction: column; gap: 8px; }
-  .step-texts .t { font-size: 18px; font-weight: 700; line-height: normal; }
-  .step-texts .d { font-size: 11px; font-weight: 500; line-height: 1.4; color: var(--text-sub); }
+  .step-texts .t { font-size: 20px; font-weight: 700; line-height: normal; }
+  .step-texts .d { font-size: 13px; font-weight: 500; line-height: 1.4; color: var(--text-sub); }
 
   .step-chevron {
     position: absolute;
@@ -389,8 +393,8 @@
   }
 
   .step-preview {
-    /* 디자인: 카드 내 y96(테두리 1 + 헤드 91 + 4), 하단 17 → 열린 카드 총높이 325 */
-    margin: 4px 17px 17px;
+    /* 디자인(1902:970): 카드 내 y109(테두리 1 + 헤드 105 + 2), 하단 18 → 열린 카드 총높이 338 */
+    margin: 2px 17px 18px;
     height: 211px;
     background: linear-gradient(to bottom, #080100, #340000);
     border: 1px solid var(--line);
@@ -780,7 +784,10 @@
   .criteria-carousel {
     display: flex;
     gap: 12px;
-    padding: 0 16px;
+    /* 세로 패딩 + 네거티브 마진: overflow-x:auto가 세로도 클리핑하므로
+       블러 번짐이 카드 위아래에서 마스킹처럼 잘리지 않게 여유 공간을 준다 */
+    padding: 14px 16px;
+    margin: -14px 0;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
     scroll-padding-left: 16px;
@@ -791,15 +798,16 @@
   .crit-card {
     position: relative;
     flex: none;
+    cursor: pointer; /* 좌/우 터치로 카드 이동 가능 */
     width: 298px;
-    height: 355px;
+    height: 361px; /* 1902:947 */
     background: var(--card);
     border: 1px solid var(--line);
     border-radius: 8px;
     scroll-snap-align: start;
     /* 포커스 이탈 정도 0~1 (0=포커스, 1=완전 이탈) — 스크롤 위치에 따라 JS가 갱신 */
     --f: 0;
-    --crit-blur: 5px; /* 이탈 시 최대 블러 (디자인값 3.25px → 모션에서 더 또렷하게) */
+    --crit-blur: 3px; /* 이탈 시 최대 블러 (디자인값 3.25 근사) */
     --crit-dim: 0.5; /* 이탈 시 최대 딤 */
     /* 진입(reveal)용 전환 — 스와이프 시작 시 .fx가 짧은 전환으로 교체한다 */
     transition:
@@ -826,7 +834,7 @@
     .crit-card.fx { transition: none; }
   }
   .crit-media {
-    margin: 15px 15px 0;
+    margin: 16px 16px 0; /* 1902:948 — 266×237 */
     height: 237px;
     border-radius: 8px;
     border: 1px solid var(--line);
@@ -841,13 +849,13 @@
   }
   .crit-texts {
     margin: 18px 21px 0;
-    width: 272px;
+    width: 270px;
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
   .crit-texts .t { font-size: 20px; font-weight: 700; line-height: normal; }
-  .crit-texts .d { font-size: 11px; font-weight: 500; line-height: 1.45; color: var(--text-sub); }
+  .crit-texts .d { font-size: 12px; font-weight: 500; line-height: 1.45; color: var(--text-sub); }
 
   /* ============ 심사 발표 ============ */
   /* 배경 이미지 위에 타이틀+날짜 필+CTA, 이미지 하단은 약관 영역으로 페이드 */
@@ -1023,37 +1031,11 @@
     font-size: 30px;
     font-weight: 700;
     letter-spacing: -0.6px;
-    /* 실제 글자는 미러(.flow-typed)가 blur-in으로 그린다 — 입력 필드는 캐럿만 보인다 */
-    color: transparent;
+    color: #fff;
+    /* 빈 값일 때는 커스텀 캐럿(.flow-caret)이 대신 깜빡인다 — JS(syncCaret)가 전환 */
     caret-color: #fff;
   }
   .flow-input::placeholder { color: rgba(255, 255, 255, 0.25); font-weight: 700; }
-
-  /* 입력 미러 — 입력 필드와 같은 자리·같은 타이포. 새로 입력된 글자만 blur-in */
-  .flow-typed {
-    position: absolute;
-    top: calc(50% - 3px);
-    left: 20px;
-    right: 20px;
-    height: 42px;
-    line-height: 42px;
-    text-align: center;
-    font-size: 30px;
-    font-weight: 700;
-    letter-spacing: -0.6px;
-    color: #fff;
-    white-space: pre;
-    overflow: hidden;
-    pointer-events: none;
-  }
-  .flow-typed .ch {
-    display: inline-block;
-    animation: ch-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
-  }
-  @keyframes ch-in {
-    from { opacity: 0; filter: blur(8px); }
-    to { opacity: 1; filter: blur(0); }
-  }
 
   /* 디자인의 "|" 캐럿 — 비포커스/빈 입력 상태에서 필드 위치를 알려주는 깜빡이 바 */
   .flow-caret {
@@ -1087,8 +1069,9 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity 0.4s, scale 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    transition: opacity 0.4s, background 0.2s, scale 0.4s cubic-bezier(0.22, 1, 0.36, 1);
   }
+  .flow-upload:active { background: rgba(196, 196, 196, 0.22); scale: 0.94; }
   /* 첨부되면 + 버튼은 물러나고 프리뷰가 그 자리를 이어받는다 */
   .flow-step-2.has-file .flow-upload { opacity: 0; scale: 0.8; pointer-events: none; }
 
@@ -1278,9 +1261,12 @@
     letter-spacing: -0.32px;
     color: #fff;
     cursor: pointer;
+    transition: background 0.2s, scale 0.12s cubic-bezier(0.22, 1, 0.36, 1);
   }
   .flow-confirm-box .btns .no { background: #313131; }
   .flow-confirm-box .btns .yes { background: var(--red); }
+  .flow-confirm-box .btns .no:active { background: #262626; scale: 0.96; }
+  .flow-confirm-box .btns .yes:active { background: #d92715; scale: 0.96; }
 
   /* ============ 이벤트 안내 (약관) ============ */
   .terms {
@@ -1370,7 +1356,7 @@
         <span class="step-num">1</span>
         <span class="step-texts">
           <span class="t">재미있는 질문 발견하기</span>
-          <span class="d">글레이즈 드라마를 시청하면서<br />갑론을박이 있을 만한 선택지를 골라주세요.</span>
+          <span class="d">글레이즈 드라마를 시청하면서 갑론을박이<br />있을 만한 선택지를 캡쳐해주세요.</span>
         </span>
         <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1403,7 +1389,7 @@
         <span class="step-num">2</span>
         <span class="step-texts">
           <span class="t">인스타그램에 릴스 올리기</span>
-          <span class="d">발견한 장면을 활용해 인스타그램에<br />설문캡션과 함께 올려주세요.</span>
+          <span class="d">발견한 장면을 활용하여 인스타그램에<br />설문캡션과 함께 릴스를 올려주세요.</span>
         </span>
         <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1435,7 +1421,7 @@
         <span class="step-num">3</span>
         <span class="step-texts">
           <span class="t">이벤트 응모하기</span>
-          <span class="d">참여하기를 통해 릴스 링크를 올려주세요.<br />승인이 완료되면 참가 상품 먼저 받을 수 있어요.</span>
+          <span class="d">참여하기를 통해 릴스 링크를 등록해주세요.<br />승인 후 참가 상품을 먼저 받을 수 있어요.</span>
         </span>
         <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
           <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
@@ -1573,7 +1559,6 @@
     <section class="flow-step flow-step-1" data-step="1">
       <h2 class="flow-title">게시물 링크를<br />입력해주세요</h2>
       <input class="flow-input" type="url" inputmode="url" autocomplete="off" spellcheck="false" aria-label="게시물 링크" />
-      <div class="flow-typed" aria-hidden="true"></div>
       <span class="flow-caret" aria-hidden="true"></span>
     </section>
 
@@ -1727,6 +1712,17 @@
     );
     window.addEventListener("resize", () => { measure(); sync(); });
 
+    // 좌/우 터치(클릭)로도 한 장씩 이동 — 오른쪽 절반 = 다음 카드, 왼쪽 절반 = 이전 카드
+    // (터치 드래그 스크롤은 click을 발화하지 않으므로 스와이프와 충돌 없음)
+    carousel.addEventListener("click", (e) => {
+      const r = carousel.getBoundingClientRect();
+      const dir = e.clientX - r.left >= r.width / 2 ? 1 : -1;
+      const x = carousel.scrollLeft;
+      const cur = stops.reduce((best, s, i) => (Math.abs(s - x) < Math.abs(stops[best] - x) ? i : best), 0);
+      const next = Math.max(0, Math.min(cards.length - 1, cur + dir));
+      carousel.scrollTo({ left: stops[next], behavior: "smooth" });
+    });
+
     measure();
     sync();
   })();
@@ -1878,38 +1874,23 @@
   const flowBack = flow.querySelector(".flow-back");
   flowBack.addEventListener("click", () => showStep(Math.max(0, flowStep - 1)));
 
-  // 입력 미러 — 실제 입력 글자는 투명하고, 미러가 같은 자리에 그린다.
-  // 값이 뒤에 덧붙었을 때만 새 글자를 blur-in (삭제·중간 수정·한글 조합 갱신은 애니메이션 없이 통째로)
-  const typedBox = flow.querySelector(".flow-typed");
+  // 입력 시작 시 지문 딤 + CTA 활성화 갱신 (글자는 입력 필드에 그대로 표시)
   const step1 = flow.querySelector(".flow-step-1");
-  let typedPrev = "";
-  function renderTyped() {
-    const v = flowInput.value;
-    let common = 0;
-    while (common < v.length && common < typedPrev.length && v[common] === typedPrev[common]) common++;
-    const appended = common === typedPrev.length && v.length > typedPrev.length;
-    typedBox.textContent = appended ? v.slice(0, common) : v;
-    if (appended) {
-      for (const ch of v.slice(common)) {
-        const s = document.createElement("span");
-        s.className = "ch";
-        s.textContent = ch;
-        typedBox.appendChild(s);
-      }
-    }
-    typedPrev = v;
-    typedBox.scrollLeft = flowInput.scrollLeft; // 긴 URL로 입력이 스크롤되면 미러도 따라간다
-    step1.classList.toggle("typing", !!v); // 지문 opacity 70%로
+  flowInput.addEventListener("input", () => {
+    step1.classList.toggle("typing", !!flowInput.value); // 지문 opacity 70%로
     updateCta();
-  }
-  flowInput.addEventListener("input", renderTyped);
+  });
 
-  // 커스텀 캐럿 — 포커스 중이거나 입력값이 있으면 숨김 (네이티브 캐럿과 중복 방지)
+  // 커스텀 캐럿 — 빈 값일 때는 항상 커스텀 캐럿을 깜빡이고(모바일에서 포커스/네이티브 캐럿이
+  // 안 잡히는 경우 대비) 네이티브 캐럿은 숨긴다. 값이 생기면 반대로 전환.
   const flowCaret = flow.querySelector(".flow-caret");
   function syncCaret() {
-    flowCaret.style.display = document.activeElement === flowInput || flowInput.value ? "none" : "";
+    const hasVal = !!flowInput.value;
+    flowCaret.style.display = hasVal ? "none" : "";
+    flowInput.style.caretColor = hasVal ? "#fff" : "transparent";
   }
-  ["focus", "blur", "input"].forEach((ev) => flowInput.addEventListener(ev, syncCaret));
+  flowInput.addEventListener("input", syncCaret);
+  syncCaret();
 
   // 1번 화면 아무 곳이나 탭해도 입력 포커스
   flow.querySelector(".flow-step-1").addEventListener("click", () => flowInput.focus());
@@ -1940,21 +1921,41 @@
     document.addEventListener("visibilitychange", () => { if (!document.hidden) tryPlay(); });
   })();
 
-  // 앱바 로고 — 스크롤로 히어로 헤드라인("놀란의 주인공에게 100만원을 드려요")과
-  // 겹치기 시작하면 페이드아웃, 헤드라인이 로고 위로 지나가면 다시 페이드인
+  // 남은 기간 카운트다운 — 실제 종료 시각이 정해지면 TIMER_DEADLINE에 입력
+  // (예: "2026-08-31T23:59:59+09:00"). null이면 데모용으로 진입 시점부터
+  // 디자인 수치(00일 03:22:00)를 카운트다운한다.
+  const TIMER_DEADLINE = null;
+  (function () {
+    const el = document.querySelector(".timer span");
+    if (!el) return;
+    const end = TIMER_DEADLINE
+      ? new Date(TIMER_DEADLINE).getTime()
+      : Date.now() + (3 * 3600 + 22 * 60) * 1000;
+    const pad = (n) => String(n).padStart(2, "0");
+    function tick() {
+      const s = Math.max(0, Math.floor((end - Date.now()) / 1000));
+      const d = Math.floor(s / 86400);
+      el.textContent =
+        "남은 기간 " + pad(d) + "일 " +
+        pad(Math.floor((s % 86400) / 3600)) + ":" +
+        pad(Math.floor((s % 3600) / 60)) + ":" +
+        pad(s % 60);
+      if (!s) clearInterval(iv); // 종료 후 00일 00:00:00 고정
+    }
+    const iv = setInterval(tick, 1000);
+    tick();
+  })();
+
+  // 앱바 로고 — 스크롤로 히어로 헤드라인("놀란의 주인공에게…")에 닿으면 페이드아웃,
+  // 이후 스크롤 내내 숨김 유지. 다시 올라와 헤드라인이 로고 아래로 내려오면 페이드인.
   (function () {
     const logo = document.querySelector(".appbar .logo");
     const parts = [...document.querySelectorAll(".hero-headline img")];
     if (!logo || !parts.length) return;
     function sync() {
       const lr = logo.getBoundingClientRect();
-      let top = Infinity, bottom = -Infinity;
-      for (const p of parts) {
-        const r = p.getBoundingClientRect();
-        top = Math.min(top, r.top);
-        bottom = Math.max(bottom, r.bottom);
-      }
-      logo.classList.toggle("hide", top < lr.bottom && bottom > lr.top);
+      const top = Math.min(...parts.map((p) => p.getBoundingClientRect().top));
+      logo.classList.toggle("hide", top < lr.bottom);
     }
     addEventListener("scroll", sync, { passive: true });
     addEventListener("resize", sync);
