@@ -83,16 +83,16 @@
   .appbar .close img { width: 14.4px; height: 14.4px; }
 
   /* ============ 히어로 (1897:3739) ============ */
-  /* 다음 섹션(당첨 상품) 타이틀이 디자인 y874에 오도록: 744 + .prizes 상단 패딩 130 */
+  /* 다음 섹션(당첨 상품) 타이틀이 디자인 y859에 오도록: 729 + .prizes 상단 패딩 130 */
   .hero {
     position: relative;
-    height: 744px;
+    height: 729px;
   }
   /* 히어로 영상 (1897:3740) — 루핑 없이 1회 재생 */
   .hero-video {
     position: absolute;
     left: 0;
-    top: 109px;
+    top: 94px;
     width: 100%;
     height: 666px;
     object-fit: cover;
@@ -116,7 +116,7 @@
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    top: 594px;
+    top: 552px;
     width: 657px;
     height: 445px;
     background: #020100;
@@ -178,7 +178,7 @@
      translateX(-50%) 중앙 정렬 금지(scale이 transform보다 먼저 적용돼 프레스가 우측으로 쏠림) */
   .cta {
     position: absolute;
-    top: 612px; /* 기존 617+47 박스와 세로 중심 동일 */
+    top: 566px; /* 디자인 571+47 박스와 세로 중심 동일 */
     left: calc(50% - 167.5px);
     width: 335px;
     height: 57px;
@@ -236,11 +236,11 @@
   /* ============ 당첨 상품 ============ */
   .prizes { padding: 130px 0 0; }
   .prizes .section-title { position: relative; z-index: 2; margin-bottom: 0; }
-  /* 상품 이미지(1896:3495) — 풀블리드(익스포트가 페이지 375px 기준으로 클리핑됨), 타이틀과 11px 겹침 */
+  /* 상품 이미지(1897:3744) — 풀블리드(익스포트가 페이지 375px 기준으로 클리핑됨, 375×263) */
   .prize-hero {
     position: relative;
     width: 100%;
-    margin-top: -33px; /* 1등 라벨과 겹침 (디자인 이미지 y893 vs 1등 끝 926) */
+    margin-top: -50px; /* 1등 라벨과 겹침 (디자인 이미지 y940 vs 1등 끝 990) */
   }
   .prize-hero img { display: block; width: 100%; }
   /* 하단 블러 딤(1896:3498) 대체 — 배경색으로 페이드 */
@@ -271,7 +271,7 @@
   .prize-cash-label {
     position: relative;
     z-index: 1;
-    margin-top: -15px; /* 이미지 하단과 겹침 (디자인 y1123 vs 이미지 끝 1138) */
+    margin-top: -16px; /* 이미지 하단과 겹침 (디자인 y1187 vs 이미지 끝 1203) */
     text-align: center;
   }
   .prize-cash-label .name { font-size: 22px; font-weight: 600; letter-spacing: -0.22px; line-height: 1.4; }
