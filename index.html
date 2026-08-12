@@ -147,9 +147,8 @@
   .hero-headline .l1a { left: 45.6px; top: 107.71px; width: 99.71px; height: 49.18px; }
   /* 주인공에게 (1897:3892) */
   .hero-headline .l1b { left: 159.6px; top: 107.6px; width: 169.61px; height: 49.58px; }
-  /* 100만원을 드려요 (1897:3907) — 그라디언트 → 단색 #FF1500 + 글로우.
-     글로우가 상 5.4 / 하 5.1 / 좌 5.4px 번져 나와 아트보드 박스(300.856×48.384)보다 크다 */
-  .hero-headline .l2 { left: 31.62px; top: 167.38px; width: 306.66px; height: 58.9px; }
+  /* 100만원을 드려요 (1897:3907) — 글로우 삭제된 시안. 스트로크 0.4가 박스(300.856×48.384) 밖으로 나온다 */
+  .hero-headline .l2 { left: 36.61px; top: 172.38px; width: 301.66px; height: 49.18px; }
 
   .timer {
     position: absolute;
@@ -1055,7 +1054,9 @@
   .flow-upload {
     position: absolute;
     left: 151px;
-    top: 414px;
+    /* 지문(50% - 68px 중앙 기준)과 같은 축으로 따라간다 — 디자인 812px 기준 y414와 동일.
+       절대 414px 고정이면 낮은 뷰포트에서 지문과 사이가 벌어지고 하단 컨트롤에 붙는다 */
+    top: calc(50% + 8px);
     width: 73px;
     height: 73px;
     background: rgba(196, 196, 196, 0.3);
