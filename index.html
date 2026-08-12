@@ -1,0 +1,2352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>놀란 프로모션</title>
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+<style>
+  :root {
+    --bg: #080100;
+    --card: #161616;
+    --card-prize: #262626;
+    --line: rgba(255, 255, 255, 0.2);
+    --red: #ff301d;
+    --red-deep: #ca040e;
+    --red-point: #ff5546;
+    --text-sub: #dfdfdf;
+    --text-dim: #888d96;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #000;
+    font-family: "Pretendard Variable", Pretendard, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    display: flex;
+    justify-content: center;
+  }
+
+  .page {
+    width: 375px;
+    flex-shrink: 0; /* 좁은 뷰포트에서도 375px 캔버스 유지 */
+    min-height: 100vh;
+    background: var(--bg);
+    overflow: hidden;
+    position: relative;
+    color: #fff;
+  }
+
+  /* ============ 앱바 ============ */
+  .appbar {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 375px;
+    height: 48px;
+    background: linear-gradient(to bottom, #000, rgba(0, 0, 0, 0));
+    z-index: 50;
+  }
+  .appbar .logo {
+    position: absolute;
+    left: 157px;
+    top: 19px;
+    width: 61.5px;
+    height: 20.3px;
+    transition: opacity 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* 히어로 헤드라인과 겹치는 동안 숨김 (JS가 스크롤로 판정) */
+  .appbar .logo.hide { opacity: 0; }
+  .appbar .logo img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+  .appbar .close {
+    position: absolute;
+    right: 16px;
+    top: 12px;
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .appbar .close img { width: 14.4px; height: 14.4px; }
+
+  /* ============ 히어로 (1897:3739) ============ */
+  /* 다음 섹션(당첨 상품) 타이틀이 디자인 y874에 오도록: 744 + .prizes 상단 패딩 130 */
+  .hero {
+    position: relative;
+    height: 744px;
+  }
+  /* 히어로 영상 (1897:3740) — 루핑 없이 1회 재생 */
+  .hero-video {
+    position: absolute;
+    left: 0;
+    top: 109px;
+    width: 100%;
+    height: 666px;
+    object-fit: cover;
+    display: block;
+  }
+  /* 상/하단 블러 딤 (1897:3745 / 1897:3746) */
+  .hero::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: -190px;
+    width: 745px;
+    height: 464px;
+    background: #000;
+    filter: blur(28.018px);
+    z-index: 1;
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 594px;
+    width: 657px;
+    height: 445px;
+    background: #020100;
+    filter: blur(28.018px);
+    z-index: 1;
+  }
+  /* 아이브로우 (1897:3779) */
+  .hero-copy {
+    position: absolute;
+    top: 72px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    z-index: 2;
+    line-height: normal;
+  }
+  .hero-copy .eyebrow { font-size: 16px; font-weight: 600; line-height: 1.3; opacity: 0.8; }
+
+  /* 헤드라인 (1897:3908) — 디자인상 아웃라인 처리된 벡터 타이틀 */
+  .hero-headline {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .hero-headline img { position: absolute; display: block; }
+  /* 놀란의 (1897:3891) */
+  .hero-headline .l1a { left: 45.6px; top: 107.71px; width: 99.71px; height: 49.18px; }
+  /* 주인공에게 (1897:3892) */
+  .hero-headline .l1b { left: 159.6px; top: 107.6px; width: 169.61px; height: 49.58px; }
+  /* 100만원을 드려요 (1897:3907) — 그라디언트 → 단색 #FF1500 + 글로우.
+     글로우가 상 5.4 / 하 5.1 / 좌 5.4px 번져 나와 아트보드 박스(300.856×48.384)보다 크다 */
+  .hero-headline .l2 { left: 31.62px; top: 167.38px; width: 306.66px; height: 58.9px; }
+
+  .timer {
+    position: absolute;
+    top: 258px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 175px;
+    height: 30px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .timer img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .timer span {
+    position: relative;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  /* 참여하기 — 플로우 CTA와 동일 스펙(335×57, 20px, 드롭섀도) + 활성/프레스 상태.
+     translateX(-50%) 중앙 정렬 금지(scale이 transform보다 먼저 적용돼 프레스가 우측으로 쏠림) */
+  .cta {
+    position: absolute;
+    top: 612px; /* 기존 617+47 박스와 세로 중심 동일 */
+    left: calc(50% - 167.5px);
+    width: 335px;
+    height: 57px;
+    background: var(--red);
+    border: none;
+    border-radius: 12.4px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    z-index: 2;
+    filter: drop-shadow(0 4px 7.5px rgba(0, 0, 0, 0.25));
+    transition: background 0.25s, scale 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .cta:active {
+    background: #d92715;
+    scale: 0.97;
+  }
+
+  /* ============ 스크롤 어피어 (blur-in) ============ */
+  .reveal {
+    opacity: 0;
+    filter: blur(14px);
+    translate: 0 24px; /* transform과 별개 속성이라 기존 translateX(-50%)와 충돌하지 않음 */
+    transition:
+      opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.9s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+    transition-delay: var(--d, 0s);
+  }
+  .reveal.in {
+    opacity: 1;
+    filter: blur(0);
+    translate: 0 0;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; filter: none; translate: none; transition: none; }
+  }
+
+  /* ============ 공통 섹션 ============ */
+  /* 히어로의 블러 딤 레이어(z-index:1) 위로 올린다 */
+  .prizes, .steps, .criteria, .announce {
+    position: relative;
+    z-index: 2;
+  }
+  .section-title {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.64px;
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  /* ============ 당첨 상품 ============ */
+  .prizes { padding: 130px 0 0; }
+  .prizes .section-title { position: relative; z-index: 2; margin-bottom: 0; }
+  /* 상품 이미지(1896:3495) — 풀블리드(익스포트가 페이지 375px 기준으로 클리핑됨), 타이틀과 11px 겹침 */
+  .prize-hero {
+    position: relative;
+    width: 100%;
+    margin-top: -33px; /* 1등 라벨과 겹침 (디자인 이미지 y893 vs 1등 끝 926) */
+  }
+  .prize-hero img { display: block; width: 100%; }
+  /* 하단 블러 딤(1896:3498) 대체 — 배경색으로 페이드 */
+  .prize-hero::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 120px;
+    background: linear-gradient(180deg, rgba(8, 1, 0, 0) 0%, #080100 100%);
+  }
+  /* 1등 — 그라디언트 텍스트, 이미지 상단과 33px 겹침 */
+  .prize-rank-1 {
+    position: relative;
+    z-index: 2;
+    margin-top: 48px;
+    text-align: center;
+    font-size: 29px;
+    font-weight: 600;
+    letter-spacing: -0.58px;
+    line-height: 1.3;
+    background: linear-gradient(180deg, #fff 35.5%, #fb1e17 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .prize-cash-label {
+    position: relative;
+    z-index: 1;
+    margin-top: -15px; /* 이미지 하단과 겹침 (디자인 y1123 vs 이미지 끝 1138) */
+    text-align: center;
+  }
+  .prize-cash-label .name { font-size: 22px; font-weight: 600; letter-spacing: -0.22px; line-height: 1.4; }
+  .prize-cash-label .count {
+    font-size: 18px;
+    font-weight: 500;
+    letter-spacing: -0.36px;
+    line-height: 1.3;
+    color: var(--text-dim);
+  }
+  .prize-cash-label .count b { color: var(--red-point); font-weight: 500; }
+  .prize-sub-row {
+    display: flex;
+    gap: 9px;
+    margin: 38px 16px 0;
+    position: relative;
+    z-index: 1;
+  }
+  .prize-sub {
+    position: relative;
+    width: 167px;
+    height: 158px;
+    background: var(--card-prize);
+    border-radius: 12px;
+  }
+  /* 등급 라벨 (2등 / 참가상) */
+  .prize-sub .rank {
+    position: absolute;
+    top: 10px;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.32px;
+    line-height: 1.3;
+  }
+  .prize-sub .item { position: absolute; }
+  .prize-sub .item-1 { left: 38px; top: 43px; width: 91px; height: 62px; }
+  .prize-sub .item-2 { left: 57px; top: 48px; width: 53px; height: 52px; }
+  .prize-sub .prize-label { position: absolute; bottom: 8px; left: 0; right: 0; text-align: center; }
+  .prize-sub .prize-label .name { font-size: 12px; font-weight: 600; letter-spacing: -0.24px; line-height: 1.3; }
+  .prize-sub .prize-label .count {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: -0.24px;
+    line-height: 1.3;
+    margin-top: 2px;
+    color: var(--text-dim);
+  }
+  .prize-sub .prize-label .count b { color: var(--red-point); font-weight: 500; }
+
+  /* ============ 참여 방법 (아코디언) ============ */
+  .steps { padding: 180px 16px 0; }
+  .steps .section-title { margin-bottom: 18px; }
+
+  .step-card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .step-card + .step-card { margin-top: 12px; }
+
+  .step-head {
+    width: 100%;
+    min-height: 91px;
+    background: none;
+    border: none;
+    font-family: inherit;
+    color: inherit;
+    text-align: left;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 19px;
+    /* 세로 패딩 15px — 텍스트 실측(60.3px)이 min-height 91을 넘지 않게. 카드 총높이 93 고정 */
+    padding: 15px 44px 15px 21px;
+    position: relative;
+  }
+  .step-num {
+    flex: none;
+    width: 26px;
+    height: 26px;
+    background: var(--red);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1;
+  }
+  .step-texts { display: flex; flex-direction: column; gap: 8px; }
+  .step-texts .t { font-size: 18px; font-weight: 700; line-height: normal; }
+  .step-texts .d { font-size: 11px; font-weight: 500; line-height: 1.4; color: var(--text-sub); }
+
+  .step-chevron {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    translate: 0 -50%;
+    width: 20px;
+    height: 20px;
+    color: rgba(255, 255, 255, 0.45);
+    transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .step-card.open .step-chevron { transform: rotate(180deg); }
+
+  /* 열림/닫힘: grid rows 트랜지션 */
+  .step-body {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .step-card.open .step-body { grid-template-rows: 1fr; }
+  .step-body > .step-body-inner {
+    overflow: hidden;
+    min-height: 0;
+  }
+
+  .step-preview {
+    /* 디자인: 카드 내 y96(테두리 1 + 헤드 91 + 4), 하단 17 → 열린 카드 총높이 325 */
+    margin: 4px 17px 17px;
+    height: 211px;
+    background: linear-gradient(to bottom, #080100, #340000);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* ── 1번 카드 데모: 지문 → 스토리 → 선택지 → 캡처 드래그 ── */
+  /* 공통 blur-in 진입 커브 — 전체 1.2배속 확정 (원본 0.75s) */
+  .scene1-q, .scene1-story, .scene1-opts .opt {
+    transition:
+      opacity 0.625s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.625s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.625s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* 질문 지문 — 270×84 중앙, 좌우 페이드 블랙 밴드 */
+  .scene1-q {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: 270px;
+    height: 84px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.56) 10%, rgba(0, 0, 0, 0.7) 50%, rgba(0, 0, 0, 0.56) 90%, rgba(0, 0, 0, 0) 100%);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: -0.26px;
+    line-height: 1.45;
+    text-align: center;
+    color: #fff;
+    z-index: 3;
+    opacity: 0;
+    filter: blur(12px);
+    translate: -50% calc(-50% + 28px); /* 아래에서 위로 떠오름 */
+    clip-path: inset(0 0);
+    /* 지문은 공통(0.625s)보다 한 박자 빠르게 맺힌다 */
+    transition-duration: 0.5s;
+  }
+  .scene1-q.in { opacity: 1; filter: blur(0); translate: -50% -50%; }
+  /* 퇴장: 좌우 가장자리가 안쪽으로 슬라이드하며 소멸 */
+  .scene1-q.out {
+    opacity: 0;
+    filter: blur(4px);
+    clip-path: inset(0 50%);
+    transition:
+      clip-path 0.417s cubic-bezier(0.55, 0, 0.55, 0.2),
+      opacity 0.417s ease-in,
+      filter 0.417s ease-in;
+  }
+
+  /* 스토리(폰 화면) — 187.8×414, 상단 라운드, 패널에 하단이 잘려 보임 */
+  .scene1-story {
+    position: absolute;
+    left: 50%;
+    top: 38px; /* 타임라인 바(상단 9~12px)와 확대 시에도 안 겹치게 하향 */
+    translate: -50% 24px;
+    width: 187.8px;
+    height: 414px;
+    background: #000;
+    border-radius: 17.1px 17.1px 0 0;
+    overflow: hidden;
+    z-index: 1;
+    opacity: 0;
+    filter: blur(14px);
+    scale: 1;
+    transform-origin: 50% 22%; /* 패널에 보이는 상단 영역 중심으로 확대 */
+    transition:
+      opacity 0.625s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.625s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.625s cubic-bezier(0.22, 1, 0.36, 1),
+      scale 0.875s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .scene1-story.in { opacity: 1; filter: blur(0); translate: -50% 0; }
+  /* 확대 + 지문(선택지) 제외 딤 */
+  .scene1-story.zoom { scale: 1.16; opacity: 0.45; }
+  .scene1-story .s-bg {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: 278.8px;
+    height: 418.2px;
+    object-fit: cover;
+  }
+  .scene1-story .s-man {
+    position: absolute;
+    left: 88.8px;
+    top: 90px;
+    width: 98.7px;
+    height: 156.8px;
+    object-fit: cover;
+  }
+  .scene1-story .s-woman {
+    position: absolute;
+    left: -31.5px;
+    top: 83.2px;
+    width: 169.7px;
+    height: 177.8px;
+    overflow: hidden;
+  }
+  .scene1-story .s-woman img {
+    position: absolute;
+    left: -24.88%;
+    top: 0;
+    width: 149.76%;
+    height: 100%;
+  }
+
+  /* 선택지 2개 — 244 중앙, 가로 페이드 블랙 밴드 */
+  .scene1-opts {
+    position: absolute;
+    left: 50%;
+    translate: -50% 0;
+    top: 50px;
+    width: 280px; /* 디자인(244) 비례 유지하며 1.3배 확대, 패널(307) 안 */
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    z-index: 2;
+    pointer-events: none;
+  }
+  .scene1-opts .opt {
+    padding: 12px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.8) 20%, #000 50%, rgba(0, 0, 0, 0.8) 80%, rgba(0, 0, 0, 0) 100%);
+    font-size: 12.5px;
+    font-weight: 500;
+    letter-spacing: -0.25px;
+    line-height: 1.4;
+    color: #fff;
+    opacity: 0;
+    filter: blur(10px);
+    translate: 0 12px;
+  }
+  .scene1-opts .opt.in { opacity: 1; filter: blur(0); translate: 0 0; }
+
+  /* 캡처 셀렉트 박스 — 좌상단(47,17)에서 213×122로 드래그 확장 */
+  .scene1-select {
+    position: absolute;
+    left: 47px;
+    top: 30px; /* 타임라인 바 회피 */
+    width: 0;
+    height: 0;
+    border: 1px dashed rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    z-index: 4;
+    opacity: 0;
+    transition:
+      width 0.917s cubic-bezier(0.22, 1, 0.36, 1),
+      height 0.917s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.167s,
+      border-color 0.125s;
+  }
+  .scene1-select.drag { width: 213px; height: 122px; opacity: 1; }
+  .scene1-select.captured { border-style: solid; border-color: rgba(255, 255, 255, 0.95); }
+  /* 캡처 반짝임 직후 자연스럽게 소멸 */
+  .scene1-select.gone {
+    opacity: 0;
+    transition: opacity 0.583s ease 0.1s;
+  }
+
+  /* 카메라 커서 — 우측 밖 → 좌상단 코너 → 우하단(248,129)으로 드래그 */
+  .scene1-cam {
+    position: absolute;
+    left: 47px;
+    top: 30px; /* 타임라인 바 회피 (셀렉트 박스와 동기) */
+    width: 22px;
+    height: 17px;
+    z-index: 5;
+    opacity: 0;
+    translate: 300px -40px;
+    transition: translate 0.917s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.292s;
+  }
+  .scene1-cam img { width: 100%; height: 100%; }
+  .scene1-cam.enter { translate: -6px -6px; opacity: 1; }
+  .scene1-cam.drag { translate: 201px 112px; }
+
+  /* 캡처 플래시 */
+  .scene1-flash {
+    position: absolute;
+    inset: 0;
+    background: #fff;
+    opacity: 0;
+    pointer-events: none;
+    z-index: 6;
+  }
+  .scene1-flash.on { animation: cap-flash 0.417s ease-out; }
+  @keyframes cap-flash { 0% { opacity: 0.85; } 100% { opacity: 0; } }
+
+  /* ── 2번 카드 데모: 새 게시물 → 설문 탭 → 캡션 → 완료 → 투표 결과 ── */
+  /* 화면은 188×386 원본 크기로 두고, 축소 상태만 transform으로 만든다 */
+  .s2-screen {
+    position: absolute;
+    transform-origin: 0 0;
+    /* 현재 배율 — 테두리 두께 역보정용. 확대(.zoom) 시 1 */
+    --s: 1;
+    /* 스크린 프레임 라운드 — PNG에 라운드가 없어 CSS로 적용.
+       디자인 실측은 3.5px(@188)이었으나 확대 모션에서 각져 보여 6px(폭의 3.2%)로 조정.
+       주의: 라운드는 scale() 적용 전 좌표계에서 계산되므로, 화면상 같은 라운드로 보이려면
+       각 스크린의 표시 폭에 비례한 값을 줘야 한다. 기준: 캡션 6px @188px */
+    border-radius: 6px;
+    overflow: hidden;
+    opacity: 0;
+    filter: blur(12px);
+    transition:
+      opacity 0.542s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.542s cubic-bezier(0.22, 1, 0.36, 1),
+      transform 0.833s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .s2-screen img { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+  /* PNG에 구워진 테두리 선은 CSS 라운드로 잘려나가 코너 호에서만 끊긴다.
+     라운드를 따라가는 1px 선을 이미지 위에 덧그려 코너까지 이어준다 (디자인 스트로크 #1c1d22) */
+  .s2-screen::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* 디자인은 축소·확대 프레임 모두 1px로 그린다. 스크린 전체가 scale 되므로
+       배율(--s)로 나눠 화면상 두께를 항상 1px로 고정 (전환은 zoom과 동일 타이밍).
+       border 대신 inset box-shadow — border-width는 정수로 반올림돼 확대 중 굵기가 튄다 */
+    box-shadow: inset 0 0 0 calc(1px / var(--s)) #1c1d22;
+    border-radius: inherit;
+    pointer-events: none;
+    transition: box-shadow 0.833s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .s2-screen.in { opacity: 1; filter: blur(0); }
+
+  /* 두 번째 선택지 리빌 — 레이어 3장을 겹친다
+     ① blank(문구 없는 빈 행) ② hint("텍스트를 입력하세요.") ③ typed("가서 뒤엎는다.")
+     hint가 먼저 완전히 사라진 뒤, typed가 행 영역에서만 좌→우로 타이핑되듯 공개된다 */
+  .s2-caption .hint {
+    transition: opacity 0.25s ease;
+  }
+  .s2-caption.cleared .hint { opacity: 0; }
+  /* typed의 clip-path 우변은 JS(typeReveal)가 글자 경계 단위로 줄여가며 공개 */
+  .s2-caption .typed {
+    clip-path: inset(108.2px 180.3px 256.6px 7.7px);
+  }
+
+  /* 새 게시물: 확대 상태(33, -178.44, 242×496.87)를 기준으로 두고 축소는 scale로
+     축소 목표 = (114, 24) 79×162 → scale 79/242, translate (81, 202.44) */
+  .s2-newpost {
+    left: 33px; top: -178.44px;
+    width: 242px; height: 496.87px;
+    transform: translate(81px, 202.44px) scale(0.32645);
+    --s: 0.32645;
+    /* 242 폭 비례 — 6px(@188)와 같은 비율. 축소 상태에서 캡션과 동일한 2.52px로 보인다 */
+    border-radius: 7.72px;
+  }
+  .s2-newpost.zoom { transform: none; --s: 1; }
+
+  /* 캡션: 확대 상태(60, 23, 188×386) 기준, 축소는 (114, 24) 79×162 */
+  .s2-caption {
+    left: 60px; top: 23px;
+    width: 188px; height: 386px;
+    transform: translate(54px, 1px) scale(0.42021);
+    --s: 0.42021;
+  }
+  .s2-caption.zoom { transform: none; --s: 1; }
+
+  /* 투표 카드 (204×114) */
+  .s2-poll {
+    position: absolute;
+    left: 52px;
+    top: 48px;
+    width: 204px;
+    height: 114px;
+    opacity: 0;
+    filter: blur(12px);
+    translate: 0 14px;
+    transition:
+      opacity 0.542s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.542s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.542s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .s2-poll.in { opacity: 1; filter: blur(0); translate: 0 0; }
+  .s2-poll img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  /* 결과 이미지를 좌→우로 공개 = 두 막대가 각자 길이까지 차오르는 효과 */
+  .s2-poll .result {
+    clip-path: inset(0 100% 0 0);
+    transition: clip-path 0.958s cubic-bezier(0.33, 1, 0.68, 1);
+  }
+  .s2-poll.voted .result { clip-path: inset(0 0 0 0); }
+
+  /* 손 커서 (2번 카드) — 우측 밖에서 진입 → 타깃 위 → 탭 */
+  .s2-hand {
+    position: absolute;
+    width: 39px;
+    height: 39px;
+    z-index: 3;
+    opacity: 0;
+    translate: 150px 40px;
+    transition: translate 0.708s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.292s, scale 0.125s;
+  }
+  .s2-hand img { width: 100%; height: 100%; transform: rotate(-30deg); }
+  .s2-hand.in { translate: 0 0; opacity: 1; }
+  .s2-hand.tap { scale: 0.8; }
+  /* 타깃별 기준 위치 (확대된 화면 기준 패널 좌표) */
+  .s2-hand-poll { left: 69px; top: 87px; width: 50px; height: 51px; } /* 설문 칩 */
+  .s2-hand-done { left: 229px; top: 32px; }                            /* 체크 버튼 */
+
+  /* ── 데모 타임라인 바 — 모션 단계별 세그먼트 (1893:3415/3416 기반) ── */
+  .demo-progress {
+    position: absolute;
+    top: 9px;
+    left: 50%;
+    translate: -50% 0;
+    width: 225px;
+    height: 3px;
+    display: flex;
+    gap: 4px;
+    z-index: 7;
+  }
+  .demo-progress .seg {
+    height: 100%;
+    border-radius: 10px;
+    background: #473131;
+    overflow: hidden;
+    /* flex 비율 = 단계 길이(ms) — JS(buildProgress)가 인라인으로 지정 */
+  }
+  .demo-progress .seg i {
+    display: block;
+    width: 0;
+    height: 100%;
+    border-radius: 10px;
+    background: var(--red); /* 채움은 JS가 단계 길이에 맞춰 linear로 확장 */
+  }
+
+  /* ── 3번 카드 데모: 참여 버튼 3상태 + 커서 탭 + 미니 컨페티 ── */
+  .demo-btn {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    translate: -50% -50%;
+    width: 239px;
+    height: 40.7px;
+    background: var(--red);
+    border-radius: 8.85px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14.3px;
+    font-weight: 700;
+    color: #fff;
+    filter: drop-shadow(0 3px 3.5px rgba(0, 0, 0, 0.1)) drop-shadow(0 13px 6.5px rgba(0, 0, 0, 0.09)) drop-shadow(0 28px 8.5px rgba(0, 0, 0, 0.05));
+    transition: background 0.15s, scale 0.15s, filter 0.35s;
+  }
+  .demo-btn.pressed { background: #c71404; scale: 0.95; }   /* 컴포넌트 2 */
+  .demo-btn.active { filter: drop-shadow(0 0 12.5px red); } /* 컴포넌트 3 */
+
+  .demo-hand {
+    position: absolute;
+    left: 208px; /* 디자인 rest 위치 (248,108) 근사 — 버튼 우하단 */
+    top: 98px;
+    width: 39px;
+    height: 39px;
+    z-index: 2;
+    translate: 140px 50px; /* 시작: 우측 밖 */
+    opacity: 0;
+    pointer-events: none;
+    transition:
+      translate 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+      opacity 0.4s,
+      scale 0.15s;
+  }
+  .demo-hand img { width: 100%; height: 100%; transform: rotate(-30deg); }
+  .demo-hand.in { translate: 0 0; opacity: 1; }
+  .demo-hand.tap { scale: 0.8; }
+
+  .step-confetti {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+  }
+
+  /* ============ 심사 기준 — 가로 슬라이더 캐러셀 ============ */
+  .criteria { padding: 180px 0 0; }
+  .criteria .section-title { margin-bottom: 18px; }
+  .criteria-carousel {
+    display: flex;
+    gap: 12px;
+    padding: 0 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-left: 16px;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .criteria-carousel::-webkit-scrollbar { display: none; }
+  .crit-card {
+    position: relative;
+    flex: none;
+    width: 298px;
+    height: 355px;
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    scroll-snap-align: start;
+    /* 포커스 이탈 정도 0~1 (0=포커스, 1=완전 이탈) — 스크롤 위치에 따라 JS가 갱신 */
+    --f: 0;
+    --crit-blur: 5px; /* 이탈 시 최대 블러 (디자인값 3.25px → 모션에서 더 또렷하게) */
+    --crit-dim: 0.5; /* 이탈 시 최대 딤 */
+    /* 진입(reveal)용 전환 — 스와이프 시작 시 .fx가 짧은 전환으로 교체한다 */
+    transition:
+      opacity 0.35s ease,
+      filter 0.75s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* 포커스된 카드만 선명, 나머지는 blur 3.25px + 50% 딤 (1900:599).
+     스크롤 진행도(--f)에 비례해 연속적으로 blur in/out 된다.
+     .reveal.in보다 뒤에 선언되어 진입 완료 후의 상태를 넘겨받는다 */
+  .crit-card.in {
+    opacity: calc(1 - var(--f) * var(--crit-dim));
+    filter: blur(calc(var(--f) * var(--crit-blur)));
+  }
+  /* 스와이프 중에는 손가락을 거의 바로 따라오도록 전환을 짧게 */
+  .crit-card.fx {
+    transition:
+      opacity 0.12s linear,
+      filter 0.12s linear,
+      translate 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .criteria-carousel.scrolling .crit-card { will-change: filter, opacity; }
+  @media (prefers-reduced-motion: reduce) {
+    .crit-card.fx { transition: none; }
+  }
+  .crit-media {
+    margin: 15px 15px 0;
+    height: 237px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, #080100 0%, #340000 100%);
+  }
+  /* 카드 아이콘 이미지 — 미디어 영역 위 중앙 배치 */
+  .crit-img {
+    position: absolute;
+    left: 50%;
+    translate: -50% 0;
+    z-index: 1;
+  }
+  .crit-texts {
+    margin: 18px 21px 0;
+    width: 272px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .crit-texts .t { font-size: 20px; font-weight: 700; line-height: normal; }
+  .crit-texts .d { font-size: 11px; font-weight: 500; line-height: 1.45; color: var(--text-sub); }
+
+  /* ============ 심사 발표 ============ */
+  /* 배경 이미지 위에 타이틀+날짜 필+CTA, 이미지 하단은 약관 영역으로 페이드 */
+  .announce { padding: 240px 16px 661px; } /* 콘텐츠 끝(날짜 필 3156) → 약관(3817) 간격 */
+  .announce .section-title { position: relative; z-index: 2; margin-bottom: 0; }
+  .announce-bg {
+    position: absolute;
+    top: 315px; /* 섹션 시작 기준 이미지 y3164 */
+    left: 0; /* 디자인상 x0 기준 (372px 익스포트라 가운데 정렬 시 1.5px 밀림) */
+    width: 372px;
+    height: 647px;
+    pointer-events: none;
+  }
+  .announce-bg img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: bottom;
+  }
+  .announce-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* 상하 페이드(블러 딤 레이어 대체) — 좌우 비네트는 익스포트 PNG에 포함됨 */
+    background: linear-gradient(180deg, #080100 0%, rgba(8, 1, 0, 0) 22%, rgba(8, 1, 0, 0) 68%, #080100 100%);
+  }
+  /* 날짜 필 (1896:3524) — 다크 캡슐 + 레드 이너 글로우 + 그라디언트 텍스트 */
+  .announce-date {
+    position: relative;
+    z-index: 2;
+    width: 244px;
+    height: 55px;
+    margin: 46px auto 0;
+    border-radius: 60px;
+    background: #090101;
+    box-shadow: inset 0 -4px 7.9px #ff301d;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .announce-date span {
+    font-size: 26px;
+    font-weight: 700;
+    line-height: normal;
+    background: linear-gradient(180deg, #fff 0%, #ffd4d5 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* ============ 참여 플로우 (놀란_참여_1~3) ============ */
+  .flow {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    justify-content: center;
+    background: #000;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.45s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.45s;
+  }
+  .flow.on {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .flow-screen {
+    position: relative;
+    width: 375px;
+    flex-shrink: 0;
+    height: 100%;
+    background: linear-gradient(180deg, #010101 47.9%, #4d0302 100%);
+    overflow: hidden;
+  }
+  .flow-logo {
+    position: absolute;
+    left: 142px;
+    top: 36px;
+    width: 90.3px;
+    height: 29.8px;
+  }
+  .flow-logo img { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .flow-close {
+    position: absolute;
+    right: 16px;
+    top: 12px;
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+  }
+  .flow-close img { width: 14.4px; height: 14.4px; }
+
+  /* 이전 단계로 — 닫기(X)와 대칭인 좌상단 백 버튼. 2단계에서만 노출 */
+  .flow-back {
+    position: absolute;
+    left: 16px;
+    top: 12px;
+    width: 24px;
+    height: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 5;
+    opacity: 0;
+    translate: -6px 0;
+    pointer-events: none;
+    transition: opacity 0.35s, translate 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .flow-back.show { opacity: 1; translate: 0 0; pointer-events: auto; }
+  .flow-back img { width: 16px; height: 16px; }
+
+  .flow-step {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    filter: blur(14px);
+    translate: 0 24px;
+    pointer-events: none;
+    transition:
+      opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .flow-step.active { opacity: 1; filter: blur(0); translate: 0 0; pointer-events: auto; }
+
+  .flow-title {
+    position: absolute;
+    z-index: 2; /* 컨페티 캔버스 위 */
+    top: calc(50% - 68px);
+    left: 0;
+    right: 0;
+    translate: 0 -50%;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    line-height: 1.4;
+    color: #fff;
+    transition:
+      opacity 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .flow-step-3 .flow-title { top: 50%; }
+  /* 입력이 시작되면(1단계) / 파일이 첨부되면(2단계) 지문은 뒤로 물러난다 (디자인 opacity 70%) */
+  .flow-step-1.typing .flow-title,
+  .flow-step-2.has-file .flow-title { opacity: 0.7; }
+  /* 2단계 지문: 프리뷰 등장 시 JS(centerStep2)가 --tshift로 밀어 그룹 가운데 정렬을 만든다 */
+  .flow-step-2 .flow-title { translate: 0 calc(-50% + var(--tshift, 0px)); }
+
+  .flow-input {
+    position: absolute;
+    top: calc(50% - 3px);
+    left: 20px;
+    right: 20px;
+    height: 42px;
+    padding: 0;
+    text-align: center;
+    background: none;
+    border: none;
+    outline: none;
+    font-family: inherit;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    /* 실제 글자는 미러(.flow-typed)가 blur-in으로 그린다 — 입력 필드는 캐럿만 보인다 */
+    color: transparent;
+    caret-color: #fff;
+  }
+  .flow-input::placeholder { color: rgba(255, 255, 255, 0.25); font-weight: 700; }
+
+  /* 입력 미러 — 입력 필드와 같은 자리·같은 타이포. 새로 입력된 글자만 blur-in */
+  .flow-typed {
+    position: absolute;
+    top: calc(50% - 3px);
+    left: 20px;
+    right: 20px;
+    height: 42px;
+    line-height: 42px;
+    text-align: center;
+    font-size: 30px;
+    font-weight: 700;
+    letter-spacing: -0.6px;
+    color: #fff;
+    white-space: pre;
+    overflow: hidden;
+    pointer-events: none;
+  }
+  .flow-typed .ch {
+    display: inline-block;
+    animation: ch-in 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+  @keyframes ch-in {
+    from { opacity: 0; filter: blur(8px); }
+    to { opacity: 1; filter: blur(0); }
+  }
+
+  /* 디자인의 "|" 캐럿 — 비포커스/빈 입력 상태에서 필드 위치를 알려주는 깜빡이 바 */
+  .flow-caret {
+    position: absolute;
+    top: calc(50% - 1px);
+    left: 50%;
+    translate: -50% 0;
+    width: 3px;
+    height: 34px;
+    background: #fff;
+    border-radius: 1.5px;
+    pointer-events: none;
+    animation: caret-blink 1.1s step-end infinite;
+  }
+  @keyframes caret-blink { 50% { opacity: 0; } }
+
+  .flow-upload {
+    position: absolute;
+    left: 151px;
+    top: 414px;
+    width: 73px;
+    height: 73px;
+    background: rgba(196, 196, 196, 0.3);
+    border: none;
+    border-radius: 22.4px;
+    cursor: pointer;
+    color: #fff;
+    font-size: 51px;
+    font-weight: 400;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s, scale 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  /* 첨부되면 + 버튼은 물러나고 프리뷰가 그 자리를 이어받는다 */
+  .flow-step-2.has-file .flow-upload { opacity: 0; scale: 0.8; pointer-events: none; }
+
+  /* 첨부 프리뷰 — 등록한 이미지/영상 미리보기 + 파일명. 탭하면 다시 파일 선택.
+     세로 위치는 JS(centerStep2)가 --shift로 밀어 지문과 함께 그룹 가운데 정렬한다 */
+  .flow-preview {
+    position: absolute;
+    top: 384px;
+    left: 20px;
+    right: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    opacity: 0;
+    filter: blur(12px);
+    translate: 0 calc(var(--shift, 0px) + 14px);
+    pointer-events: none;
+    transition:
+      opacity 0.542s cubic-bezier(0.22, 1, 0.36, 1),
+      filter 0.542s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.542s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .flow-preview.in { opacity: 1; filter: blur(0); translate: 0 var(--shift, 0px); pointer-events: auto; }
+  .flow-preview-media {
+    display: flex;
+    justify-content: center;
+  }
+  .flow-preview img,
+  .flow-preview video {
+    display: block;
+    max-width: 220px;
+    /* 상한 240 — 낮은 뷰포트에선 JS(centerStep2)가 max-height를 더 조인다 */
+    max-height: 240px;
+    border-radius: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+  .flow-filename {
+    max-width: 100%;
+    text-align: center;
+    font-size: 12px;
+    color: var(--text-sub);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .flow-progress {
+    position: absolute;
+    bottom: 93px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 210px;
+    height: 5px;
+    border-radius: 5px;
+    overflow: hidden;
+    display: flex;
+  }
+  .flow-progress i {
+    width: 70px;
+    height: 5px;
+    background: #210000;
+  }
+  /* 활성 인디케이터 — 단계 전환 시 슬라이드 */
+  .flow-progress .bar {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 70px;
+    height: 5px;
+    background: #ffe3e3;
+    border-radius: 5px;
+    translate: 0 0;
+    transition: translate 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* 컨페티 (응모 완료 화면) — canvas는 replaced 요소라 width/height 100%를 명시해야
+     inset:0만으로 늘어나지 않고 375 컬럼 안에 정확히 갇힌다. */
+  .flow-confetti {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* CTA 3-스테이트: 비활성(입력/첨부 전) → 활성(레드) → 프레스(진레드 + 눌림)
+     주의: translateX(-50%) 중앙 정렬은 금지 — scale 속성이 transform보다 먼저 적용돼
+     프레스 축소가 우측으로 쏠린다. left/right 정렬이어야 가운데로 눌린다 */
+  .flow-cta {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    height: 57px;
+    background: var(--red);
+    border: none;
+    border-radius: 12.4px;
+    color: #fff;
+    font-family: inherit;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    filter: drop-shadow(0 4px 7.5px rgba(0, 0, 0, 0.25));
+    transition:
+      background 0.25s,
+      color 0.25s,
+      filter 0.25s,
+      scale 0.15s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .flow-cta:disabled {
+    background: #2b2b2b;
+    color: rgba(255, 255, 255, 0.35);
+    cursor: default;
+    filter: none;
+  }
+  .flow-cta:not(:disabled):active {
+    background: #d92715;
+    scale: 0.97;
+  }
+
+  /* 최종 확인 모달 (놀란_참여_2) — 딤 40% + #161616 박스, 아니오/네 */
+  .flow-confirm {
+    position: absolute;
+    inset: 0;
+    z-index: 10;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1), visibility 0.35s;
+  }
+  .flow-confirm.on { opacity: 1; visibility: visible; pointer-events: auto; }
+  .flow-confirm-box {
+    width: 300px;
+    background: #161616;
+    border-radius: 16px;
+    padding: 24px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    filter: blur(10px);
+    translate: 0 12px;
+    transition:
+      filter 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+      translate 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  .flow-confirm.on .flow-confirm-box { filter: blur(0); translate: 0 0; }
+  .flow-confirm-box .contents { width: 100%; }
+  .flow-confirm-box .t {
+    display: block;
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.36px;
+    line-height: 1.4;
+    color: #fff;
+    text-align: center;
+  }
+  .flow-confirm-box .d {
+    margin-top: 8px;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: -0.28px;
+    line-height: 1.4;
+    color: #d1d3d6;
+    text-align: center;
+  }
+  .flow-confirm-box .btns {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+  }
+  .flow-confirm-box .btns button {
+    flex: 1;
+    height: 48px;
+    border: none;
+    border-radius: 8px;
+    font-family: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    letter-spacing: -0.32px;
+    color: #fff;
+    cursor: pointer;
+  }
+  .flow-confirm-box .btns .no { background: #313131; }
+  .flow-confirm-box .btns .yes { background: var(--red); }
+
+  /* ============ 이벤트 안내 (약관) ============ */
+  .terms {
+    position: relative;
+    z-index: 2;
+    padding: 0 16px 60px;
+    color: #afafaf;
+    font-size: 8px;
+    font-weight: 400;
+    letter-spacing: -0.08px;
+    line-height: 1.45;
+  }
+  .terms p { margin: 0; }
+  .terms .grp { margin-top: 12px; }
+  .terms ul { margin: 0; padding-left: 12px; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- 앱바 -->
+  <header class="appbar">
+    <div class="logo">
+      <img src="assets/logo-1.svg" alt="" />
+      <img src="assets/logo-2.svg" alt="" />
+      <img src="assets/logo-3.svg" alt="" />
+      <img src="assets/logo-4.svg" alt="놀란" />
+    </div>
+    <button class="close" aria-label="닫기"><img src="assets/xmark.svg" alt="" /></button>
+  </header>
+
+  <!-- 히어로 -->
+  <section class="hero">
+    <video class="hero-video" src="assets/hero_video_hold.mp4" muted playsinline autoplay preload="auto"></video>
+    <div class="hero-copy">
+      <p class="eyebrow">영화 좀 보신다구요?</p>
+    </div>
+    <h1 class="hero-headline" aria-label="놀란의 주인공에게 100만원을 드려요">
+      <img class="l1a" src="assets/hero-headline-1a.svg" alt="" />
+      <img class="l1b" src="assets/hero-headline-1b.svg" alt="" />
+      <img class="l2" src="assets/hero-headline-2.svg" alt="" />
+    </h1>
+    <div class="timer">
+      <img src="assets/timer-pill.svg" alt="" />
+      <span>남은 기간 00일 03:22:00</span>
+    </div>
+    <button class="cta">참여하기</button>
+  </section>
+
+  <!-- 당첨 상품 -->
+  <section class="prizes">
+    <h2 class="section-title reveal">당첨 상품</h2>
+    <p class="prize-rank-1 reveal" style="--d: 0.1s">1등</p>
+    <div class="prize-hero reveal" style="--d: 0.16s">
+      <img src="assets/prize-hero.png" alt="현금 100만원" />
+    </div>
+    <div class="prize-cash-label reveal" style="--d: 0.22s">
+      <p class="name">현금 100만원</p>
+      <p class="count"><b>0</b>/1</p>
+    </div>
+    <div class="prize-sub-row reveal" style="--d: 0.34s">
+      <div class="prize-sub">
+        <p class="rank">2등</p>
+        <img class="item item-1" src="assets/prize-sugar1.png" alt="" />
+        <div class="prize-label">
+          <p class="name">월간 구독권</p>
+          <p class="count"><b>0</b>/3</p>
+        </div>
+      </div>
+      <div class="prize-sub">
+        <p class="rank">참가상</p>
+        <img class="item item-2" src="assets/prize-sugar2.png" alt="" />
+        <div class="prize-label">
+          <p class="name">슈가 5만~천개</p>
+          <p class="count">참가상, 전원</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 참여 방법 : 아코디언 -->
+  <section class="steps">
+    <h2 class="section-title reveal">참여 방법</h2>
+
+    <article class="step-card reveal" style="--d: 0.12s">
+      <button class="step-head" aria-expanded="false" aria-controls="step-body-1">
+        <span class="step-num">1</span>
+        <span class="step-texts">
+          <span class="t">재미있는 질문 발견하기</span>
+          <span class="d">글레이즈 드라마를 시청하면서<br />갑론을박이 있을 만한 선택지를 골라주세요.</span>
+        </span>
+        <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="step-body" id="step-body-1">
+        <div class="step-body-inner">
+          <div class="step-preview">
+            <div class="demo-progress" aria-hidden="true"><i></i></div>
+            <div class="scene1-q" aria-hidden="true">아내가 다른 남자와 함께 있는 것을 목격했다.<br />어떻게 해야 할까?</div>
+            <div class="scene1-story" aria-hidden="true">
+              <img class="s-bg" src="assets/story-bg.png" alt="" />
+              <img class="s-man" src="assets/story-man.png" alt="" />
+              <div class="s-woman"><img src="assets/story-woman.png" alt="" /></div>
+            </div>
+            <div class="scene1-opts" aria-hidden="true">
+              <div class="opt">조용히 증거를 수집한다.</div>
+              <div class="opt">당장 가서 뒤엎는다.</div>
+            </div>
+            <div class="scene1-select" aria-hidden="true"></div>
+            <div class="scene1-cam" aria-hidden="true"><img src="assets/camera-cursor.svg" alt="" /></div>
+            <div class="scene1-flash" aria-hidden="true"></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="step-card reveal" style="--d: 0.24s">
+      <button class="step-head" aria-expanded="false" aria-controls="step-body-2">
+        <span class="step-num">2</span>
+        <span class="step-texts">
+          <span class="t">인스타그램에 릴스 올리기</span>
+          <span class="d">발견한 장면을 활용해 인스타그램에<br />설문캡션과 함께 올려주세요.</span>
+        </span>
+        <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="step-body" id="step-body-2">
+        <div class="step-body-inner">
+          <div class="step-preview">
+            <div class="demo-progress" aria-hidden="true"><i></i></div>
+            <div class="s2-screen s2-newpost" aria-hidden="true"><img src="assets/s2-newpost.png" alt="" /></div>
+            <div class="s2-screen s2-caption" aria-hidden="true">
+              <img src="assets/s2-caption-blank.png" alt="" />
+              <img class="hint" src="assets/s2-caption-empty.png" alt="" />
+              <img class="typed" src="assets/s2-caption.png" alt="" />
+            </div>
+            <div class="s2-poll" aria-hidden="true">
+              <img src="assets/s2-poll.png" alt="" />
+              <img class="result" src="assets/s2-poll-result.png" alt="" />
+            </div>
+            <div class="s2-hand s2-hand-poll" aria-hidden="true"><img src="assets/hand.svg" alt="" /></div>
+            <div class="s2-hand s2-hand-done" aria-hidden="true"><img src="assets/hand.svg" alt="" /></div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article class="step-card reveal" style="--d: 0.36s">
+      <button class="step-head" aria-expanded="false" aria-controls="step-body-3">
+        <span class="step-num">3</span>
+        <span class="step-texts">
+          <span class="t">이벤트 응모하기</span>
+          <span class="d">참여하기를 통해 릴스 링크를 올려주세요.<br />승인이 완료되면 참가 상품 먼저 받을 수 있어요.</span>
+        </span>
+        <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+          <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+      <div class="step-body" id="step-body-3">
+        <div class="step-body-inner">
+          <div class="step-preview">
+            <div class="demo-progress" aria-hidden="true"><i></i></div>
+            <canvas class="step-confetti" aria-hidden="true"></canvas>
+            <div class="demo-btn" aria-hidden="true">참여하기</div>
+            <div class="demo-hand" aria-hidden="true"><img src="assets/hand.svg" alt="" /></div>
+          </div>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <!-- 심사 기준 (가로 슬라이더 캐러셀) -->
+  <section class="criteria">
+    <h2 class="section-title reveal">심사 기준</h2>
+
+    <div class="criteria-carousel">
+      <article class="crit-card reveal" style="--d: 0.12s">
+        <div class="crit-media"></div>
+        <img class="crit-img" style="top: 69px; width: 136px; height: 128px" src="assets/crit-1.png" alt="" />
+        <div class="crit-texts">
+          <p class="t">많은 호응받기</p>
+          <p class="d">좋아요, 설문참여, 댓글, 공유, 저장이 올라갈수록<br />반영 점수가 올라가요. 친구들에게 많이 공유해주세요.</p>
+        </div>
+      </article>
+
+      <article class="crit-card reveal" style="--d: 0.24s">
+        <div class="crit-media"></div>
+        <img class="crit-img" style="top: 70px; width: 153px; height: 128px" src="assets/crit-2.png" alt="" />
+        <div class="crit-texts">
+          <p class="t">독창적으로 보여주기</p>
+          <p class="d">다른 사람들과는 다른 나만의 콘텐츠로 만들어보세요.<br />독창적인 콘텐츠일수록 반영 점수가 올라가요.</p>
+        </div>
+      </article>
+
+      <article class="crit-card reveal" style="--d: 0.36s">
+        <div class="crit-media"></div>
+        <img class="crit-img" style="top: 73px; width: 131px; height: 128px" src="assets/crit-3.png" alt="" />
+        <div class="crit-texts">
+          <p class="t">더 많이 응모하기</p>
+          <p class="d">열 번 찍어 안 넘어가는 나무는 없어요.<br />횟수제한 없이 콘텐츠를 응모할 수 있어요.</p>
+        </div>
+      </article>
+
+      <article class="crit-card reveal" style="--d: 0.48s">
+        <div class="crit-media"></div>
+        <img class="crit-img" style="top: 72px; width: 123px; height: 123px" src="assets/crit-4.png" alt="" />
+        <div class="crit-texts">
+          <p class="t">친구들에게 소문내기</p>
+          <p class="d">콘테스트를 주변 지인들에게 공유해주세요.<br />내 공유로 친구들이 참여하면 가산점을 받아요.</p>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 심사 발표 -->
+  <section class="announce">
+    <div class="announce-bg reveal" style="--d: 0.3s"><img src="assets/announce-bg.png" alt="" /></div>
+    <h2 class="section-title reveal">심사 발표</h2>
+    <div class="announce-date reveal" style="--d: 0.12s"><span>8월 25일 화요일</span></div>
+  </section>
+
+  <!-- 이벤트 안내 (약관) -->
+  <section class="terms">
+    <div>
+      <p>이벤트 안내</p>
+
+      <div class="grp">
+        <p>참가상 지급</p>
+        <p>제출된 응모작은 이벤트 참여 조건 충족 여부를 확인한 후 승인됩니다.</p>
+        <p>기본 참여 조건을 충족하여 승인된 모든 참가자에게 참가상 슈가가 지급됩니다.</p>
+        <p>참가상은 횟수 제한 없이 지급됩니다.</p>
+        <p>게시물이 비공개이거나 삭제된 경우, 제출한 링크로 게시물을 확인할 수 없는 경우, 필수 참여 조건이 누락된 경우에는 승인이 제한될 수 있습니다.</p>
+      </div>
+
+      <div class="grp">
+        <p>부정 참여 및 당첨 취소</p>
+        <p>다음에 해당하는 경우 참여 승인 또는 당첨이 취소되며, 지급된 슈가와 경품이 회수될 수 있습니다.</p>
+        <ul>
+          <li>타인의 콘텐츠를 도용하거나 동일 콘텐츠를 반복 제출한 경우</li>
+          <li>여러 계정을 이용해 중복 또는 부정 참여한 경우</li>
+          <li>좋아요·댓글·공유 등 게시물 반응을 구매하거나 인위적으로 조작한 경우</li>
+          <li>매크로, 자동화 프로그램 등 비정상적인 방법을 이용한 경우</li>
+          <li>심사 또는 경품 지급 전 게시물을 삭제하거나 비공개로 전환한 경우</li>
+          <li>운영정책이나 관련 법령을 위반한 경우</li>
+        </ul>
+      </div>
+
+      <div class="grp">
+        <p>응모작 및 원본 제출</p>
+        <p>응모자는 직접 제작한 콘텐츠만 제출할 수 있으며, 타인의 콘텐츠를 도용하거나 무단으로 사용해서는 안 됩니다.</p>
+        <p>수상자는 경품 지급을 위해 게시물의 원본 영상과 회사가 요청하는 확인 자료를 제출해야 합니다.</p>
+        <p>제출한 원본이 응모 게시물과 다르거나 원본을 제출하지 않는 경우, 실제 제작자임을 확인할 수 없는 경우에는 당첨이 취소될 수 있습니다.</p>
+      </div>
+
+      <div class="grp">
+        <p>저작권 및 콘텐츠 활용</p>
+        <p>수상작의 저작재산권은 경품 지급을 조건으로 글레이즈에 양도됩니다.</p>
+        <p>양도되는 권리에는 수상작의 복제, 배포, 전시, 공중송신과 수정·편집·재가공 및 2차적저작물 작성·이용에 관한 권리가 포함됩니다.</p>
+        <p>글레이즈는 수상작을 서비스 운영, 광고, 홍보 및 마케팅 목적으로 기간과 매체의 제한 없이 활용할 수 있습니다.</p>
+        <p>응모작에 제3자의 저작권, 초상권, 상표권 등 권리가 포함된 경우 응모자가 사전에 필요한 동의를 받아야 하며, 이와 관련하여 발생하는 책임은 응모자에게 있습니다.</p>
+      </div>
+
+      <div class="grp">
+        <p>경품 지급</p>
+        <p>당첨자는 안내된 기간 내 본인 확인과 경품 지급에 필요한 정보 및 원본 파일을 제출해야 합니다.</p>
+        <p>기간 내 자료를 제출하지 않거나 제출 정보가 가입자 또는 당첨자 정보와 일치하지 않는 경우 당첨이 취소될 수 있습니다.</p>
+        <p>현금 경품은 당첨자 본인 명의의 국내 은행 계좌로만 지급됩니다.</p>
+        <p>경품에 부과되는 제세공과금은 당첨자 본인이 부담하며, 관련 세액을 공제한 금액이 지급됩니다.</p>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- 참여 플로우 오버레이 (놀란_참여_1~3) -->
+<div class="flow" id="flow" aria-modal="true" role="dialog">
+  <div class="flow-screen">
+    <div class="flow-logo">
+      <img src="assets/logo-1.svg" alt="" />
+      <img src="assets/logo-2.svg" alt="" />
+      <img src="assets/logo-3.svg" alt="" />
+      <img src="assets/logo-4.svg" alt="GLAZE" />
+    </div>
+    <button class="flow-back" aria-label="이전 단계"><img src="assets/chevron-left.svg" alt="" /></button>
+    <button class="flow-close" aria-label="닫기"><img src="assets/xmark.svg" alt="" /></button>
+
+    <!-- 1. 링크 입력 -->
+    <section class="flow-step flow-step-1" data-step="1">
+      <h2 class="flow-title">게시물 링크를<br />입력해주세요</h2>
+      <input class="flow-input" type="url" inputmode="url" autocomplete="off" spellcheck="false" aria-label="게시물 링크" />
+      <div class="flow-typed" aria-hidden="true"></div>
+      <span class="flow-caret" aria-hidden="true"></span>
+    </section>
+
+    <!-- 2. 원본 파일 업로드 -->
+    <section class="flow-step flow-step-2" data-step="2">
+      <h2 class="flow-title">작업 확인을 위해<br />원본 파일을 올려주세요</h2>
+      <button class="flow-upload" aria-label="파일 올리기">+</button>
+      <div class="flow-preview" role="button" aria-label="파일 다시 선택">
+        <div class="flow-preview-media"></div>
+        <p class="flow-filename"></p>
+      </div>
+      <input type="file" accept="video/*,image/*" hidden />
+    </section>
+
+    <!-- 3. 완료 -->
+    <section class="flow-step flow-step-3" data-step="3">
+      <canvas class="flow-confetti" id="flowConfetti" aria-hidden="true"></canvas>
+      <h2 class="flow-title">응모가 완료되었어요</h2>
+    </section>
+
+    <div class="flow-progress" aria-hidden="true"><i></i><i></i><i></i><span class="bar"></span></div>
+    <button class="flow-cta">다음</button>
+
+    <!-- 최종 확인 모달 -->
+    <div class="flow-confirm">
+      <div class="flow-confirm-box" role="alertdialog" aria-label="제출 확인">
+        <div class="contents">
+          <strong class="t">제출하시겠습니까?</strong>
+          <p class="d">참여하기 완료 후에는 정보를<br />수정할 수 없어요.</p>
+        </div>
+        <div class="btns">
+          <button class="no">아니오</button>
+          <button class="yes">네</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // 자동 투어 — 각 카드 모션이 1사이클 끝나면 다음 카드로 진행(1→2→3, 순환 없음).
+  // 3번 사이클이 끝나면 투어 종료 — 이후는 유저가 알아서. 직접 조작 시에도 즉시 해제.
+  let autoTour = true;
+  function advanceTour(card) {
+    if (!autoTour) return;
+    const cards = [...document.querySelectorAll(".steps .step-card")];
+    const i = cards.indexOf(card);
+    if (i >= cards.length - 1) { autoTour = false; return; } // 3번에서 투어 종료
+    const next = cards[i + 1];
+    card.classList.remove("open");
+    card.querySelector(".step-head").setAttribute("aria-expanded", "false");
+    next.classList.add("open");
+    next.querySelector(".step-head").setAttribute("aria-expanded", "true");
+  }
+
+  // 참여 방법 아코디언 — 한 번에 하나만 열림 (기본 모두 닫힘, 1번은 blur-in 후 자동 오픈)
+  document.querySelectorAll(".steps .step-head").forEach((head) => {
+    head.addEventListener("click", () => {
+      autoTour = false; // 직접 조작 → 자동 투어 중단
+      const card = head.closest(".step-card");
+      const isOpen = card.classList.toggle("open");
+      head.setAttribute("aria-expanded", String(isOpen));
+      if (isOpen) {
+        document.querySelectorAll(".steps .step-card.open").forEach((other) => {
+          if (other === card) return;
+          other.classList.remove("open");
+          other.querySelector(".step-head").setAttribute("aria-expanded", "false");
+        });
+      }
+    });
+  });
+
+  // 스크롤 어피어 — 섹션 단위 트리거, 섹션 안의 요소들은 --d 스태거로 함께 blur-in (1회성)
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        // 이미 지나친 섹션(새로고침 후 스크롤 복원 등)도 바로 표시
+        const passed = entry.boundingClientRect.bottom < (entry.rootBounds ? entry.rootBounds.top : 0);
+        if (entry.isIntersecting || passed) {
+          entry.target.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
+          io.unobserve(entry.target);
+
+          // 참여 방법: 카드 전체 blur-in 완료 후 1번 카드 자동 오픈
+          if (entry.target.classList.contains("steps")) {
+            const firstCard = entry.target.querySelector(".step-card");
+            const wait = passed ? 0 : 1000; // 카드들이 거의 자리 잡는 시점에 살짝 겹쳐서 오픈
+            setTimeout(() => {
+              firstCard.classList.add("open");
+              firstCard.querySelector(".step-head").setAttribute("aria-expanded", "true");
+            }, wait);
+          }
+        }
+      });
+    },
+    // 섹션 상단이 뷰포트 하단에서 30% 올라온 지점을 넘어야 발화
+    { threshold: 0, rootMargin: "0px 0px -30% 0px" }
+  );
+  document.querySelectorAll(".prizes, .steps, .criteria, .announce").forEach((sec) => io.observe(sec));
+
+  // 심사 기준 캐러셀 — 스크롤 위치에 연동해 포커스 카드만 선명, 나머지는 blur in/out (1900:599)
+  (function () {
+    const carousel = document.querySelector(".criteria-carousel");
+    if (!carousel) return;
+    const cards = [...carousel.querySelectorAll(".crit-card")];
+    if (!cards.length) return;
+
+    let stops = []; // 각 카드가 포커스되는 스크롤 위치
+    let pitch = 1; // 카드 간 이동 거리(298 + 12)
+
+    function measure() {
+      const max = Math.max(0, carousel.scrollWidth - carousel.clientWidth);
+      const pad = parseFloat(getComputedStyle(carousel).scrollPaddingLeft) || 0;
+      // 스크롤 컨테이너 내부 기준 좌표 (offsetParent에 의존하지 않도록 rect로 계산)
+      const base = carousel.getBoundingClientRect().left - carousel.scrollLeft;
+      const raw = cards.map((c) => c.getBoundingClientRect().left - base - pad);
+      pitch = raw.length > 1 ? raw[1] - raw[0] || 1 : carousel.clientWidth || 1;
+      // 마지막 카드는 스냅 위치가 max를 넘으므로 스크롤 끝을 포커스 지점으로 본다
+      stops = raw.map((v) => Math.min(Math.max(v, 0), max));
+    }
+
+    // 선형이면 절반쯤 지나갈 때까지 블러가 거의 안 붙는다.
+    // 앞쪽을 당긴 커브라 카드가 막 벗어나기 시작할 때부터 또렷하게 물러난다.
+    const EASE = 0.8;
+
+    let raf = 0;
+    function sync() {
+      raf = 0;
+      const x = carousel.scrollLeft;
+      cards.forEach((c, i) => {
+        const d = Math.min(1, Math.abs(x - stops[i]) / pitch);
+        c.style.setProperty("--f", Math.pow(d, EASE).toFixed(3));
+      });
+    }
+
+    // 진입 애니메이션이 끝난 뒤(첫 스와이프 시점)부터 짧은 전환으로 교체
+    let armed = false;
+    let idle = 0;
+    carousel.addEventListener(
+      "scroll",
+      () => {
+        if (!armed) {
+          armed = true;
+          cards.forEach((c) => c.classList.add("fx"));
+        }
+        carousel.classList.add("scrolling");
+        clearTimeout(idle);
+        idle = setTimeout(() => carousel.classList.remove("scrolling"), 160);
+        if (!raf) raf = requestAnimationFrame(sync);
+      },
+      { passive: true }
+    );
+    window.addEventListener("resize", () => { measure(); sync(); });
+
+    measure();
+    sync();
+  })();
+
+  // ===== 컨페티 (응모 완료 화면) — 하단에서 위로 분출 =====
+  // 캔버스는 .flow-screen(375 컬럼) 안에 있고 비트맵 밖은 그려지지 않으므로
+  // 데스크톱에서도 모바일 뷰 폭 밖으로 나가지 않는다.
+  const confettiCanvas = document.getElementById("flowConfetti");
+  // 레드 계열 중심 + 포인트 화이트/딥레드 (페이지 팔레트)
+  const CONFETTI_COLORS = [
+    "#ff301d", "#ff301d", "#ff5546", "#ff5546", "#ffb3aa", "#ffb3aa",
+    "#ca040e", "#ffffff", "#ffffff", "#ffe3e3", "#8c0a04"
+  ];
+
+  // opts: count / duration / sizeScale / speedScale — 작은 패널용 미니 버전에 사용
+  function launchConfetti(canvas, opts = {}) {
+    if (!canvas) return;
+    if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (canvas._raf) cancelAnimationFrame(canvas._raf);
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const W = canvas.clientWidth, H = canvas.clientHeight;
+    if (W <= 0 || H <= 0) return; // 레이아웃 전/접힘 상태면 그릴 게 없다
+    canvas.width = W * dpr;
+    canvas.height = H * dpr;
+    const ctx = canvas.getContext("2d");
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const COUNT = opts.count || 240;
+    const sizeK = opts.sizeScale || 1;
+    const speedK = opts.speedScale || 1;
+    const maxDelay = COUNT < 100 ? 300 : 650; // 미니 버전은 시차도 짧게
+    const parts = [];
+    for (let i = 0; i < COUNT; i++) {
+      const x = W * (0.03 + 0.94 * Math.random());
+      // 위쪽 ±28° 원뿔로 분출, 가장자리에서는 살짝 안쪽으로
+      const angle = -Math.PI / 2 + (Math.random() - 0.5) * 0.98;
+      const speed = (24 + Math.random() * 13) * speedK;
+      parts.push({
+        x: x,
+        y: H + 8 + Math.random() * 50 * speedK,
+        vx: Math.cos(angle) * speed * 0.5 + (x < W * 0.5 ? 0.5 : -0.5),
+        vy: Math.sin(angle) * speed,
+        g: (0.16 + Math.random() * 0.08) * speedK, // 낮은 중력 — 오래 떠 있는다
+        drag: 0.9865 + Math.random() * 0.006,
+        w: (4 + Math.random() * 3.5) * sizeK,
+        h: (6 + Math.random() * 4.5) * sizeK,
+        shape: i % 5,                          // 0,1,2 사각 / 3 리본 / 4 원
+        rot: Math.random() * Math.PI * 2,
+        vr: (Math.random() - 0.5) * 0.32,
+        phase: Math.random() * Math.PI * 2,
+        sway: (0.4 + Math.random() * 0.7) * speedK,
+        delay: Math.random() * maxDelay,       // 시차 분출로 풍성하게
+        color: CONFETTI_COLORS[(Math.random() * CONFETTI_COLORS.length) | 0]
+      });
+    }
+
+    const DURATION = opts.duration || 3800;
+    const start = performance.now();
+    let prev = start;
+    (function tick(now) {
+      const t = now - start;
+      // 물리는 60fps 1프레임 기준값 — dt로 정규화해야 120Hz에서 2배속으로 튀지 않는다
+      const dt = Math.min(3, (now - prev) / 16.667);
+      prev = now;
+      ctx.clearRect(0, 0, W, H);
+      let alive = false;
+      for (let i = 0; i < COUNT; i++) {
+        const p = parts[i];
+        if (t < p.delay) { alive = true; continue; }
+        p.vx *= Math.pow(p.drag, dt);
+        // 상승 중엔 강한 감속 → 빠르게 솟았다가 정점에서 탁 멈춘다
+        p.vy = p.vy * Math.pow(p.vy < 0 ? 0.958 : 0.997, dt) + p.g * dt;
+        p.x += (p.vx + Math.sin(t / 130 + p.phase) * p.sway * (p.vy > 0 ? 1 : 0.3)) * dt;
+        p.y += p.vy * dt;
+        p.rot += p.vr * dt;
+        if (p.y < H + 30) alive = true; else continue;
+
+        const fade = t > DURATION - 650 ? Math.max(0, (DURATION - t) / 650) : 1;
+        if (!fade) continue;
+        const tumble = Math.sin(t / (70 + (i % 5) * 22) + p.phase); // 종이 뒤집힘
+
+        ctx.save();
+        ctx.globalAlpha = fade * (0.75 + 0.25 * Math.abs(tumble));
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.fillStyle = p.color;
+        if (p.shape === 4) {                   // 원 조각
+          ctx.scale(1, Math.max(0.25, Math.abs(tumble)));
+          ctx.beginPath();
+          ctx.arc(0, 0, p.w * 0.62, 0, Math.PI * 2);
+          ctx.fill();
+        } else if (p.shape === 3) {            // 가는 리본
+          ctx.scale(Math.max(0.3, Math.abs(tumble)), 1);
+          ctx.fillRect(-p.w * 0.28, -p.h * 0.95, p.w * 0.56, p.h * 1.9);
+        } else {                               // 사각 조각
+          ctx.scale(1, Math.max(0.22, Math.abs(tumble)));
+          ctx.fillRect(-p.w / 2, -p.h / 2, p.w, p.h);
+        }
+        ctx.restore();
+      }
+      if (alive && t < DURATION) canvas._raf = requestAnimationFrame(tick);
+      else { canvas._raf = 0; ctx.clearRect(0, 0, W, H); }
+    })(start);
+  }
+
+  function stopConfetti(canvas) {
+    if (!canvas || !canvas._raf) return;
+    cancelAnimationFrame(canvas._raf);
+    canvas._raf = 0;
+    const ctx = canvas.getContext("2d");
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  // ===== 참여 플로우 (놀란_참여_1~3) =====
+  const flow = document.getElementById("flow");
+  const flowSteps = [...flow.querySelectorAll(".flow-step")];
+  const flowBar = flow.querySelector(".flow-progress .bar");
+  const flowInput = flow.querySelector(".flow-input");
+  const fileInput = flow.querySelector('input[type="file"]');
+  const fileName = flow.querySelector(".flow-filename");
+  let flowStep = 0; // 0-based
+
+  const flowCta = flow.querySelector(".flow-cta");
+  const CTA_LABELS = ["다음", "참여하기", "확인"];
+
+  // CTA 활성 조건: 1단계 링크 입력, 2단계 파일 첨부. 완료 화면은 항상 활성
+  function updateCta() {
+    flowCta.disabled =
+      (flowStep === 0 && !flowInput.value.trim()) ||
+      (flowStep === 1 && !step2.classList.contains("has-file"));
+  }
+
+  function showStep(n) {
+    flowStep = n;
+    flowSteps.forEach((s, i) => s.classList.toggle("active", i === n));
+    flowBar.style.translate = n * 70 + "px 0"; // 세그먼트 폭 70px 단위 슬라이드
+    flowBack.classList.toggle("show", n === 1); // 이전 단계 버튼 — 업로드 화면에서만 (완료 후엔 되돌아가지 않음)
+    flowCta.textContent = CTA_LABELS[n];
+    updateCta();
+    if (n === 0) {
+      flowInput.focus(); // 즉시 + 페이드 인 완료 후 한 번 더 (브라우저별 안전망)
+      setTimeout(() => flowInput.focus(), 500);
+    }
+    if (n === 2) launchConfetti(confettiCanvas); // 응모 완료 화면 진입 시 축포
+  }
+
+  // 이전 단계로
+  const flowBack = flow.querySelector(".flow-back");
+  flowBack.addEventListener("click", () => showStep(Math.max(0, flowStep - 1)));
+
+  // 입력 미러 — 실제 입력 글자는 투명하고, 미러가 같은 자리에 그린다.
+  // 값이 뒤에 덧붙었을 때만 새 글자를 blur-in (삭제·중간 수정·한글 조합 갱신은 애니메이션 없이 통째로)
+  const typedBox = flow.querySelector(".flow-typed");
+  const step1 = flow.querySelector(".flow-step-1");
+  let typedPrev = "";
+  function renderTyped() {
+    const v = flowInput.value;
+    let common = 0;
+    while (common < v.length && common < typedPrev.length && v[common] === typedPrev[common]) common++;
+    const appended = common === typedPrev.length && v.length > typedPrev.length;
+    typedBox.textContent = appended ? v.slice(0, common) : v;
+    if (appended) {
+      for (const ch of v.slice(common)) {
+        const s = document.createElement("span");
+        s.className = "ch";
+        s.textContent = ch;
+        typedBox.appendChild(s);
+      }
+    }
+    typedPrev = v;
+    typedBox.scrollLeft = flowInput.scrollLeft; // 긴 URL로 입력이 스크롤되면 미러도 따라간다
+    step1.classList.toggle("typing", !!v); // 지문 opacity 70%로
+    updateCta();
+  }
+  flowInput.addEventListener("input", renderTyped);
+
+  // 커스텀 캐럿 — 포커스 중이거나 입력값이 있으면 숨김 (네이티브 캐럿과 중복 방지)
+  const flowCaret = flow.querySelector(".flow-caret");
+  function syncCaret() {
+    flowCaret.style.display = document.activeElement === flowInput || flowInput.value ? "none" : "";
+  }
+  ["focus", "blur", "input"].forEach((ev) => flowInput.addEventListener(ev, syncCaret));
+
+  // 1번 화면 아무 곳이나 탭해도 입력 포커스
+  flow.querySelector(".flow-step-1").addEventListener("click", () => flowInput.focus());
+
+  function openFlow() {
+    flow.classList.add("on"); // opacity 트랜지션으로 페이드 인
+    document.body.style.overflow = "hidden";
+    showStep(0);
+  }
+
+  function closeFlow() {
+    flow.classList.remove("on"); // 페이드 아웃
+    flowConfirm.classList.remove("on");
+    document.body.style.overflow = "";
+    stopConfetti(confettiCanvas);
+  }
+
+  document.querySelector(".hero .cta").addEventListener("click", openFlow);
+  flow.querySelector(".flow-close").addEventListener("click", closeFlow);
+
+  // 히어로 영상 — 자동재생이 막히면 첫 인터랙션에서 1회 재생 (루프 없음)
+  (function () {
+    const v = document.querySelector(".hero-video");
+    if (!v) return;
+    const tryPlay = () => { if (v.paused && !v.ended) v.play().catch(() => {}); };
+    tryPlay();
+    document.addEventListener("pointerdown", tryPlay, { once: true });
+    document.addEventListener("visibilitychange", () => { if (!document.hidden) tryPlay(); });
+  })();
+
+  // 앱바 로고 — 스크롤로 히어로 헤드라인("놀란의 주인공에게 100만원을 드려요")과
+  // 겹치기 시작하면 페이드아웃, 헤드라인이 로고 위로 지나가면 다시 페이드인
+  (function () {
+    const logo = document.querySelector(".appbar .logo");
+    const parts = [...document.querySelectorAll(".hero-headline img")];
+    if (!logo || !parts.length) return;
+    function sync() {
+      const lr = logo.getBoundingClientRect();
+      let top = Infinity, bottom = -Infinity;
+      for (const p of parts) {
+        const r = p.getBoundingClientRect();
+        top = Math.min(top, r.top);
+        bottom = Math.max(bottom, r.bottom);
+      }
+      logo.classList.toggle("hide", top < lr.bottom && bottom > lr.top);
+    }
+    addEventListener("scroll", sync, { passive: true });
+    addEventListener("resize", sync);
+    sync();
+  })();
+
+  // CTA: 1단계 "다음" → 2단계, 2단계 "참여하기" → 최종 확인 모달, 완료 화면 "확인" → 닫기
+  flowCta.addEventListener("click", () => {
+    if (flowStep === 0) showStep(1);
+    else if (flowStep === 1) flowConfirm.classList.add("on");
+    else closeFlow();
+  });
+
+  // 최종 확인 모달 — "네"에서만 등록 완료로 진행
+  const flowConfirm = flow.querySelector(".flow-confirm");
+  flowConfirm.querySelector(".no").addEventListener("click", () => flowConfirm.classList.remove("on"));
+  flowConfirm.querySelector(".yes").addEventListener("click", () => {
+    flowConfirm.classList.remove("on");
+    showStep(2);
+  });
+  flowConfirm.addEventListener("click", (e) => {
+    if (e.target === flowConfirm) flowConfirm.classList.remove("on"); // 딤 탭으로 닫기
+  });
+
+  // 화면 2: + 버튼 → 파일 선택 → 첨부되면 프리뷰로 교체 (프리뷰 탭 시 다시 선택)
+  const step2 = flow.querySelector(".flow-step-2");
+  const flowPreview = flow.querySelector(".flow-preview");
+  const previewMedia = flow.querySelector(".flow-preview-media");
+  let previewUrl = null;
+
+  // 지문 + 프리뷰 + 파일명을 하나의 그룹으로 보고 앱바~진행 바 사이에 세로 가운데 정렬.
+  // 지문은 --tshift, 프리뷰는 --shift로 밀어 트랜지션을 타고 이동한다.
+  function centerStep2() {
+    const media = previewMedia.firstChild;
+    if (!media || !step2.classList.contains("has-file")) return;
+    const H = flow.querySelector(".flow-screen").clientHeight;
+    if (!H) return; // 아직 레이아웃 전 (백그라운드 탭 등) — resize에서 다시 계산된다
+    const title2 = step2.querySelector(".flow-title");
+    const titleH = title2.offsetHeight;
+    const nameH = fileName.offsetHeight;
+    const GAP = 28;   // 지문 ↔ 프리뷰
+    const NGAP = 12;  // 프리뷰 ↔ 파일명 (.flow-preview gap)
+    const zoneTop = 64;        // 앱바 48 + 여백
+    const zoneBot = H - 114;   // 진행 바(bottom 93 + 높이 5) 위 여백
+    // 낮은 뷰포트에선 미디어 상한을 조여 그룹이 존을 넘지 않게
+    const capH = Math.max(80, Math.min(240, zoneBot - zoneTop - titleH - GAP - NGAP - nameH));
+    media.style.maxHeight = capH + "px";
+    const groupH = titleH + GAP + media.offsetHeight + NGAP + nameH;
+    const top0 = zoneTop + (zoneBot - zoneTop - groupH) / 2; // 그룹 상단 y
+    // 지문 기본 top edge = H/2 - 68 - titleH/2 (translate -50% 포함) → top0으로
+    title2.style.setProperty("--tshift", Math.round(top0 - H / 2 + 68 + titleH / 2) + "px");
+    // 프리뷰 기본 top = 384 → 그룹 내 자기 자리(top0 + titleH + GAP)로
+    flowPreview.style.setProperty("--shift", Math.round(top0 + titleH + GAP - 384) + "px");
+  }
+  window.addEventListener("resize", centerStep2);
+
+  flow.querySelector(".flow-upload").addEventListener("click", () => fileInput.click());
+  flowPreview.addEventListener("click", () => fileInput.click());
+  fileInput.addEventListener("change", () => {
+    const f = fileInput.files[0];
+    if (!f) return; // 선택 취소 — 기존 첨부 유지
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    previewUrl = URL.createObjectURL(f);
+    previewMedia.innerHTML = "";
+    const isVideo = f.type.startsWith("video/");
+    const el = document.createElement(isVideo ? "video" : "img");
+    el.src = previewUrl;
+    if (isVideo) {
+      el.muted = true;
+      el.loop = true;
+      el.playsInline = true;
+      el.autoplay = true;
+    }
+    // 미디어 크기가 잡히면 그룹 가운데 정렬 재계산 (offsetHeight 읽기가 레이아웃을 강제하므로 rAF 불필요)
+    el.addEventListener(isVideo ? "loadedmetadata" : "load", () => centerStep2(), { once: true });
+    previewMedia.appendChild(el);
+    fileName.textContent = f.name;
+    step2.classList.add("has-file"); // 지문 딤 + 버튼 퇴장
+    flowPreview.classList.remove("in"); // 교체 첨부여도 blur-in 재생
+    void flowPreview.offsetWidth;
+    flowPreview.classList.add("in");
+    updateCta();
+  });
+
+  // ===== 스텝 카드 데모 공통 게이트 =====
+  // 카드가 완전히 열린 뒤에만 루프가 돌고, 닫히면 즉시 멈추고 초기 상태로 되돌린다.
+  const demoWait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  // 데모 타임라인 바 — 모션 단계별 세그먼트. durations(ms 배열)가 칸 너비 비율과 채움 속도를 겸한다.
+  function buildProgress(panel, durations) {
+    const wrap = panel.querySelector(".demo-progress");
+    if (!wrap) return;
+    wrap.innerHTML = durations.map((d) => `<span class="seg" style="flex:${d}"><i></i></span>`).join("");
+  }
+  function runProgress(panel, durations) {
+    const bars = [...panel.querySelectorAll(".demo-progress .seg i")];
+    if (!bars.length) return;
+    bars.forEach((b) => { b.style.transition = "none"; b.style.width = "0"; });
+    void panel.offsetWidth; // 리플로우로 리셋 확정
+    const token = (panel._progressToken = (panel._progressToken || 0) + 1);
+    (async () => {
+      for (let i = 0; i < bars.length; i++) {
+        if (panel._progressToken !== token) return; // 리셋/새 사이클로 무효화됨
+        bars[i].style.transition = "width " + durations[i] + "ms linear";
+        bars[i].style.width = "100%";
+        await demoWait(durations[i]);
+      }
+    })();
+  }
+  function resetProgress(panel) {
+    panel._progressToken = (panel._progressToken || 0) + 1; // 진행 중 세그먼트 체인 중단
+    panel.querySelectorAll(".demo-progress .seg i").forEach((b) => {
+      b.style.transition = "none";
+      b.style.width = "0";
+    });
+  }
+
+  function attachCardDemo(card, runCycle, reset, onCycleEnd) {
+    if (!card) return;
+    const body = card.querySelector(".step-body");
+    let gen = 0; // 실행 세대 — 닫히거나 다시 열리면 증가해 진행 중이던 루프를 무효화
+
+    // 열림 트랜지션(grid-template-rows 0.45s)이 끝나는 시점 — 이벤트가 안 잡히면 타임아웃으로 대체
+    function openTransitionEnd() {
+      return new Promise((resolve) => {
+        let done = false;
+        const finish = () => {
+          if (done) return;
+          done = true;
+          body.removeEventListener("transitionend", onEnd);
+          resolve();
+        };
+        const onEnd = (e) => { if (e.propertyName === "grid-template-rows") finish(); };
+        body.addEventListener("transitionend", onEnd);
+        setTimeout(finish, 600);
+      });
+    }
+
+    async function loop(my) {
+      const alive = () => my === gen && card.classList.contains("open");
+      while (alive()) {
+        reset();
+        await runCycle(alive);
+        // 사이클 완주 시 자동 투어 훅 — 다음 카드로 넘어가면 open 해제로 루프가 끝난다
+        if (alive() && onCycleEnd) onCycleEnd();
+      }
+      reset();
+    }
+
+    async function onOpen() {
+      const my = ++gen;
+      await openTransitionEnd();
+      if (my === gen && card.classList.contains("open")) loop(my);
+    }
+
+    // class 변경은 blur-in(.in) 등으로도 발생하므로, open 상태가 실제로 바뀔 때만 반응
+    let wasOpen = card.classList.contains("open");
+    new MutationObserver(() => {
+      const isOpen = card.classList.contains("open");
+      if (isOpen === wasOpen) return;
+      wasOpen = isOpen;
+      if (isOpen) onOpen();
+      else { gen++; reset(); }               // 닫히면 즉시 중단 + 초기화
+    }).observe(card, { attributes: true, attributeFilter: ["class"] });
+
+    if (wasOpen) onOpen();
+  }
+
+  // ===== 1번 카드 데모 — 지문 blur-in → 슬라이드 퇴장 → 폰 화면 → 선택지 → 캡처 드래그 =====
+  (function () {
+    const card = document.querySelectorAll(".steps .step-card")[0];
+    if (!card) return;
+    const panel = card.querySelector(".step-preview");
+    const q = panel.querySelector(".scene1-q");
+    const story = panel.querySelector(".scene1-story");
+    const opts = [...panel.querySelectorAll(".scene1-opts .opt")];
+    const sel = panel.querySelector(".scene1-select");
+    const cam = panel.querySelector(".scene1-cam");
+    const flash = panel.querySelector(".scene1-flash");
+
+    // 씬 요소만 비운다 — 사이클 중간(마지막 빈 화면 프레임)에도 쓰이므로 진행 바는 건드리지 않음
+    const clearScene = () => {
+      q.classList.remove("in", "out");
+      story.classList.remove("in", "zoom");
+      opts.forEach((o) => o.classList.remove("in"));
+      sel.classList.remove("drag", "captured", "gone");
+      cam.classList.remove("enter", "drag");
+      flash.classList.remove("on");
+    };
+    const reset = () => {
+      clearScene();
+      resetProgress(panel);
+    };
+
+    // 단계별 대기(ms) — 1.2배속 확정값. 6·7번(커서 진입·드래그)은 CSS 트랜지션 0.917s보다 짧게 줄이지 말 것
+    const W1 = [
+      400,  // 0 시작 딜레이 (지문이 빨리 맺히도록 한 박자 당김)
+      1167, // 1 지문 읽는 시간
+      625,  // 2 지문 퇴장
+      958,  // 3 화면 blur-in
+      292,  // 4 선택지 1→2 스태거
+      833,  // 5 선택지 홀드
+      958,  // 6 커서 진입
+      1000, // 7 드래그
+      1083, // 8 캡처 잔상
+      650,  // 9 소멸 완료 대기 (blur-out 0.625s + 여유)
+      1200, // 10 빈 화면 홀드 후 재시작
+    ];
+    // 진행 바 세그먼트: ① 지문 등장·퇴장 ② 화면+선택지 ③ 캡처+마무리 — W1에서 자동 산출
+    const sumW1 = (a, b) => W1.slice(a, b).reduce((s, v) => s + v, 0);
+    const SEG1 = [sumW1(0, 3), sumW1(3, 6), sumW1(6, 11)];
+    buildProgress(panel, SEG1);
+
+    attachCardDemo(card, async (alive) => {
+      runProgress(panel, SEG1);
+      await demoWait(W1[0]); if (!alive()) return;
+      q.classList.add("in");                     // 1: 지문 — 아래에서 위로 blur-in
+      await demoWait(W1[1]); if (!alive()) return; // 읽는 시간
+      q.classList.add("out");                    //    좌우 → 안쪽으로 좁혀지며 blur-out
+      await demoWait(W1[2]); if (!alive()) return;
+      story.classList.add("in");                 // 2: 화면 blur-in
+      await demoWait(W1[3]); if (!alive()) return;
+      story.classList.add("zoom");               // 3: 확대 + 화면 딤 (지문 제외)
+      opts[0].classList.add("in");               //    지문(선택지) 1
+      await demoWait(W1[4]); if (!alive()) return;
+      opts[1].classList.add("in");               //    지문(선택지) 2
+      await demoWait(W1[5]); if (!alive()) return;
+      cam.classList.add("enter");                // 4: 카메라 커서 진입 → 좌상단 코너
+      await demoWait(W1[6]); if (!alive()) return;
+      sel.classList.add("drag");                 //    드래그: 셀렉트 박스 확장 +
+      cam.classList.add("drag");                 //    커서 우하단으로 이동
+      await demoWait(W1[7]); if (!alive()) return;
+      sel.classList.add("captured");             //    캡처 — 실선 전환 + 플래시
+      flash.classList.add("on");
+      setTimeout(() => flash.classList.remove("on"), 433);
+      setTimeout(() => sel.classList.add("gone"), 208); // 반짝임과 함께 셀렉트 박스 자연 소멸
+      await demoWait(W1[8]); if (!alive()) return; // 캡처 잔상
+      clearScene();                              // 마지막 프레임: 전부 blur-out → 빈 화면 (진행 바는 유지)
+      await demoWait(W1[9]); if (!alive()) return; // 소멸 완료 대기
+      await demoWait(W1[10]);                    // 빈 화면 홀드 후 재시작 (첫 프레임도 빈 화면)
+    }, reset, () => advanceTour(card));
+  })();
+
+  // ===== 2번 카드 데모 — 새 게시물 → 설문 탭 → 캡션 입력 → 완료 → 투표 결과 =====
+  (function () {
+    const card = document.querySelectorAll(".steps .step-card")[1];
+    if (!card) return;
+    const panel = card.querySelector(".step-preview");
+    const newpost = panel.querySelector(".s2-newpost");
+    const caption = panel.querySelector(".s2-caption");
+    const typed = caption.querySelector(".typed");
+    const poll = panel.querySelector(".s2-poll");
+    const handPoll = panel.querySelector(".s2-hand-poll");
+    const handDone = panel.querySelector(".s2-hand-done");
+
+    // "가서 뒤엎는다." 한 글자씩 입력 — 글자별 우측 경계(px, typed 좌표계)까지 클립을 넓힌다
+    // 텍스트 시작 x≈16.4, 한글 폭≈6.2 / 공백·마침표≈2.5
+    const CHAR_EDGES = [22.6, 28.8, 31.3, 37.5, 43.7, 49.9, 56.1, 180.3];
+    // 공백(3번째)은 짧게, 나머지는 타이핑 리듬으로 박자에 미세 변화 (1.2배속 확정값)
+    const typeStep = (i) => (i === 2 ? 58 : 100 + (i % 3) * 29);
+    async function typeReveal(alive) {
+      for (let i = 0; i < CHAR_EDGES.length; i++) {
+        typed.style.clipPath = `inset(108.2px ${(188 - CHAR_EDGES[i]).toFixed(1)}px 256.6px 7.7px)`;
+        await demoWait(typeStep(i));
+        if (!alive()) return;
+      }
+    }
+
+    const reset = () => {
+      newpost.classList.remove("in", "zoom");
+      caption.classList.remove("in", "zoom", "cleared");
+      typed.style.clipPath = "";                      // CSS 기본(전체 숨김)으로 복귀
+      poll.classList.remove("in", "voted");
+      handPoll.classList.remove("in", "tap");
+      handDone.classList.remove("in", "tap");
+      resetProgress(panel);
+    };
+
+    // 단계별 대기(ms) — 1.2배속 확정값. 2번(확대)은 CSS transform 0.833s보다 짧게 줄이지 말 것
+    const W2 = [
+      417,  // 0 시작 딜레이
+      917,  // 1 새 게시물 blur-in 홀드
+      958,  // 2 확대
+      792,  // 3 손 호버 (설문 칩)
+      192,  // 4 탭
+      375,  // 5 탭 해제
+      542,  // 6 blur-out
+      833,  // 7 캡션 blur-in
+      350,  // 8 힌트 소멸
+      333,  // 9 입력 후 여백
+      792,  // 10 손 호버 (체크 버튼)
+      192,  // 11 탭
+      375,  // 12 탭 해제
+      542,  // 13 blur-out
+      917,  // 14 투표 blur-in
+      1250, // 15 게이지 차오름
+      1667, // 16 사이클 종료 후 재시작 텀
+    ];
+    // 진행 바 세그먼트: ① 새 게시물+설문 탭 ② 캡션 입력(타이핑 리빌 포함) ③ 투표 — W2에서 자동 산출
+    const sumW2 = (a, b) => W2.slice(a, b).reduce((s, v) => s + v, 0);
+    const TYPE_MS = CHAR_EDGES.reduce((s, _, i) => s + typeStep(i), 0);
+    const SEG2 = [sumW2(0, 7), sumW2(7, 9) + TYPE_MS + sumW2(9, 14), sumW2(14, 17)];
+    buildProgress(panel, SEG2);
+
+    attachCardDemo(card, async (alive) => {
+      runProgress(panel, SEG2);
+      // 1. 시작 프레임 — 새 게시물 축소 상태로 blur-in
+      await demoWait(W2[0]); if (!alive()) return;
+      newpost.classList.add("in");
+      await demoWait(W2[1]); if (!alive()) return;
+
+      // 2. 확대 → 설문 칩 클릭 → blur-out
+      newpost.classList.add("zoom");
+      await demoWait(W2[2]); if (!alive()) return;
+      handPoll.classList.add("in");
+      await demoWait(W2[3]); if (!alive()) return;
+      handPoll.classList.add("tap");
+      await demoWait(W2[4]); if (!alive()) return;
+      handPoll.classList.remove("tap");
+      await demoWait(W2[5]); if (!alive()) return;
+      handPoll.classList.remove("in");
+      newpost.classList.remove("in");                 // blur-out
+      await demoWait(W2[6]); if (!alive()) return;
+
+      // 3. 캡션 화면 blur-in → 텍스트 리빌 → 체크 클릭 → blur-out
+      caption.classList.add("in", "zoom");
+      await demoWait(W2[7]); if (!alive()) return;
+      caption.classList.add("cleared");               // "텍스트를 입력하세요." 먼저 완전히 소멸
+      await demoWait(W2[8]); if (!alive()) return;
+      await typeReveal(alive);                        // 빈 행 → "가서 뒤엎는다." 한 글자씩 입력
+      if (!alive()) return;
+      await demoWait(W2[9]); if (!alive()) return;
+      handDone.classList.add("in");
+      await demoWait(W2[10]); if (!alive()) return;
+      handDone.classList.add("tap");
+      await demoWait(W2[11]); if (!alive()) return;
+      handDone.classList.remove("tap");
+      await demoWait(W2[12]); if (!alive()) return;
+      handDone.classList.remove("in");
+      caption.classList.remove("in");                 // blur-out
+      await demoWait(W2[13]); if (!alive()) return;
+
+      // 4. 투표 화면 → 게이지 차오름
+      poll.classList.add("in");
+      await demoWait(W2[14]); if (!alive()) return;
+      poll.classList.add("voted");
+      await demoWait(W2[15]); if (!alive()) return;
+
+      // 5. 처음으로
+      poll.classList.remove("in");
+      await demoWait(W2[16]);
+    }, reset, () => advanceTour(card));
+  })();
+
+  // ===== 3번 카드 데모 — 커서 탭 → 버튼 상태 1→2→3 → 미니 컨페티 =====
+  (function () {
+    const card = document.querySelectorAll(".steps .step-card")[2];
+    if (!card) return;
+    const panel = card.querySelector(".step-preview");
+    const btn = panel.querySelector(".demo-btn");
+    const hand = panel.querySelector(".demo-hand");
+    const canvas = panel.querySelector(".step-confetti");
+
+    const reset = () => {
+      btn.classList.remove("pressed", "active");
+      hand.classList.remove("in", "tap");
+      stopConfetti(canvas);
+      resetProgress(panel);
+    };
+
+    // 3번은 단일 모션이라 세그먼트 없이 한 칸 — 사이클 전체 길이(대기 시간 바꾸면 함께 갱신)
+    const SEG3 = [5420];
+    buildProgress(panel, SEG3);
+
+    attachCardDemo(card, async (alive) => {
+      runProgress(panel, SEG3);
+      await demoWait(900); if (!alive()) return;
+      hand.classList.add("in");            // 커서 우측 밖 → 버튼 위로 진입
+      await demoWait(1000); if (!alive()) return;
+      hand.classList.add("tap");           // 탭
+      btn.classList.add("pressed");        // 2번: 눌림 상태
+      await demoWait(240); if (!alive()) return;
+      hand.classList.remove("tap");
+      btn.classList.remove("pressed");
+      btn.classList.add("active");         // 3번: 글로우 활성
+      await demoWait(180); if (!alive()) return;
+      launchConfetti(canvas, { count: 60, duration: 1800, sizeScale: 0.7, speedScale: 0.42 }); // 미니 컨페티
+      await demoWait(1100); if (!alive()) return;
+      hand.classList.remove("in");         // 커서 퇴장
+      await demoWait(2000);                // 사이클 종료 후 재시작 텀 2초
+    }, reset, () => advanceTour(card));
+  })();
+</script>
+</body>
+</html>
