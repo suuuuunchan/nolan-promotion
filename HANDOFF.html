@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>놀란 프로모션 랜딩 — 개발 핸드오프</title>
+<style>
+  :root {
+    --bg: #ffffff; --text: #1a1d21; --sub: #57606a; --line: #d8dee4;
+    --card: #f6f8fa; --accent: #cf222e; --link: #0969da; --code-bg: #f0f2f4;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --text: #e6edf3; --sub: #9198a1; --line: #30363d;
+      --card: #161b22; --accent: #ff5546; --link: #4493f8; --code-bg: #1c2128;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text);
+    font-family: "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", "Malgun Gothic", sans-serif;
+    font-size: 15px; line-height: 1.7;
+    -webkit-text-size-adjust: 100%;
+  }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 48px 24px 96px; }
+  h1 { font-size: 28px; line-height: 1.3; margin: 0 0 4px; letter-spacing: -0.5px; }
+  .meta { color: var(--sub); font-size: 13px; margin-bottom: 40px; }
+  h2 {
+    font-size: 20px; margin: 48px 0 12px; padding-bottom: 8px;
+    border-bottom: 1px solid var(--line); letter-spacing: -0.3px;
+  }
+  h3 { font-size: 16px; margin: 24px 0 8px; }
+  p, li { margin: 0 0 8px; }
+  ul, ol { padding-left: 22px; margin: 8px 0 16px; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em; background: var(--code-bg);
+    padding: 2px 6px; border-radius: 5px;
+  }
+  pre {
+    background: var(--code-bg); padding: 14px 16px; border-radius: 8px;
+    overflow-x: auto; margin: 12px 0 16px;
+  }
+  pre code { background: none; padding: 0; font-size: 13px; }
+  .tablewrap { overflow-x: auto; margin: 12px 0 16px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { border: 1px solid var(--line); padding: 8px 12px; text-align: left; vertical-align: top; }
+  th { background: var(--card); font-weight: 600; white-space: nowrap; }
+  .warn {
+    background: var(--card); border-left: 4px solid var(--accent);
+    padding: 12px 16px; border-radius: 0 8px 8px 0; margin: 12px 0 16px;
+  }
+  .warn strong { color: var(--accent); }
+  .toc {
+    background: var(--card); border: 1px solid var(--line); border-radius: 10px;
+    padding: 16px 20px; margin: 0 0 8px; font-size: 14px;
+  }
+  .toc ol { margin: 6px 0 0; columns: 2; column-gap: 32px; }
+  .toc li { margin: 0 0 4px; break-inside: avoid; }
+  .checklist { list-style: none; padding-left: 4px; }
+  .checklist li { padding-left: 28px; position: relative; margin-bottom: 6px; }
+  .checklist li::before {
+    content: ""; position: absolute; left: 0; top: 4px; width: 15px; height: 15px;
+    border: 1.5px solid var(--sub); border-radius: 4px;
+  }
+  .dim { color: var(--sub); }
+  @media print {
+    body { font-size: 12px; }
+    .wrap { padding: 0; max-width: none; }
+    h2 { break-after: avoid; }
+    .toc ol { columns: 2; }
+    tr, .warn, li { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>놀란 프로모션 랜딩 — 개발 핸드오프</h1>
+<p class="meta">기준 커밋 <code>8f338da</code> · 작성일 2026-08-13 · 마크다운 버전: <code>HANDOFF.md</code></p>
+
+<nav class="toc">
+  <strong>목차</strong>
+  <ol>
+    <li><a href="#overview">개요</a></li>
+    <li><a href="#viewport">뷰포트 전략 (중요)</a></li>
+    <li><a href="#design">디자인 소스</a></li>
+    <li><a href="#codemap">코드 맵</a></li>
+    <li><a href="#interaction">인터랙션 명세 요약</a></li>
+    <li><a href="#backend">백엔드/앱 연동 필요 지점</a></li>
+    <li><a href="#assets">에셋 인벤토리</a></li>
+    <li><a href="#copy">확인 필요 (카피 불일치)</a></li>
+    <li><a href="#caveats">알려진 제약 / 주의</a></li>
+    <li><a href="#qa">QA 체크리스트</a></li>
+  </ol>
+</nav>
+
+<h2 id="overview">1. 개요</h2>
+<p>글레이즈(GLAZE) "놀란" 드라마 릴스 콘테스트 프로모션 랜딩. <strong>빌드 도구 없는 단일 <code>index.html</code></strong> 정적 페이지로, CSS/JS 전부 인라인이다. 외부 의존성은 Pretendard 폰트 CDN(jsdelivr) 하나뿐이다.</p>
+<ul>
+  <li>로컬 실행: <code>index.html</code>을 브라우저로 열면 끝 (서버 불필요)</li>
+  <li>배포: GitHub Pages, main 브랜치 루트 (<code>.nojekyll</code> 포함)</li>
+</ul>
+
+<h3>저장소 / 배포 URL</h3>
+<div class="tablewrap"><table>
+  <tr><th>저장소</th><th>URL</th><th>상태</th></tr>
+  <tr><td><code>suuuuunchan/nolan-promotion</code></td><td><a href="https://suuuuunchan.github.io/nolan-promotion/">suuuuunchan.github.io/nolan-promotion/</a></td><td>원본. 현재 최신</td></tr>
+  <tr><td><code>suuuuunchan/nolan-promotion-page</code></td><td><a href="https://suuuuunchan.github.io/nolan-promotion-page/">suuuuunchan.github.io/nolan-promotion-page/</a></td><td>복제본. 최신이지만 정리 대상</td></tr>
+</table></div>
+<div class="warn"><strong>⚠️</strong> 같은 코드가 두 저장소에 있다. <strong>하나를 정식으로 정하고 나머지는 아카이브할 것</strong> (이력 동일, fast-forward 관계). GitHub Pages는 <code>cache-control: max-age=600</code>이라 배포 후 <strong>최대 10분간 이전 버전</strong>이 보일 수 있다.</div>
+
+<h2 id="viewport">2. 뷰포트 전략 (중요)</h2>
+<pre><code>&lt;meta name="viewport" content="width=375" /&gt;</code></pre>
+<p><strong>375px 고정 캔버스</strong>를 기기 폭에 맞게 브라우저가 통째로 스케일한다. 모든 좌표가 피그마 375 기준 px 그대로이고, 미디어쿼리가 없다. 이 전제 때문에:</p>
+<ul>
+  <li>히어로 헤드라인은 <code>&lt;img&gt;</code>가 아닌 <strong>인라인 SVG</strong>다 — <code>&lt;img&gt;</code>는 확대 전 해상도로 래스터화된 뒤 늘어나 뭉개진다.</li>
+  <li>태블릿/데스크톱에서는 페이지가 크게 확대된다(의도된 모바일 전용 설계).</li>
+  <li>반응형 개편 시 이 메타태그부터 손대야 하며, 절대좌표 레이아웃 전체가 영향을 받는다.</li>
+</ul>
+
+<h2 id="design">3. 디자인 소스</h2>
+<p>피그마: <a href="https://www.figma.com/design/Zwsfv008Icd0ycO8JGBzWd/%EC%9A%B4%EC%98%81-%EB%94%94%EC%9E%90%EC%9D%B8?node-id=1897-3739">운영 디자인 / 놀란 프로모션 페이지 (1897:3739)</a></p>
+<p>CSS 주석에 피그마 노드 ID를 병기해 뒀다 (예: <code>히어로 (1897:3739)</code>, <code>상품 이미지(1897:3744)</code>). 좌표 수정 시 피그마 해당 노드와 대조하면 된다.</p>
+
+<h2 id="codemap">4. 코드 맵 (index.html, 2,467줄)</h2>
+
+<h3>CSS (<code>&lt;style&gt;</code>, ≈43–1300줄)</h3>
+<div class="tablewrap"><table>
+  <tr><th>블록</th><th>위치(≈줄)</th></tr>
+  <tr><td>앱바</td><td>43</td></tr>
+  <tr><td>히어로</td><td>86</td></tr>
+  <tr><td>스크롤 어피어(blur-in) <code>.reveal</code></td><td>203</td></tr>
+  <tr><td>당첨 상품</td><td>237</td></tr>
+  <tr><td>참여 방법(아코디언 + 데모 씬 1~3)</td><td>328</td></tr>
+  <tr><td>심사 기준(가로 캐러셀)</td><td>784</td></tr>
+  <tr><td>심사 발표</td><td>863</td></tr>
+  <tr><td>참여 플로우(모달 3단계)</td><td>912</td></tr>
+  <tr><td>이벤트 안내(약관)</td><td>1283</td></tr>
+</table></div>
+
+<h3>JS (<code>&lt;script&gt;</code>, ≈1697–2467줄)</h3>
+<div class="tablewrap"><table>
+  <tr><th>블록</th><th>위치(≈줄)</th><th>역할</th></tr>
+  <tr><td>자동 투어</td><td>1699</td><td>참여 방법 카드 1→2→3 자동 진행, 유저 조작 시 즉시 해제</td></tr>
+  <tr><td>아코디언</td><td>1712</td><td>한 번에 하나만 열림</td></tr>
+  <tr><td>스크롤 어피어 IO</td><td>1729</td><td><code>.reveal</code>에 <code>.in</code> 부여 (1회성). <code>.steps</code>는 타이틀/카드묶음(<code>.step-list</code>) 분리 관찰</td></tr>
+  <tr><td>심사 기준 캐러셀</td><td>1756</td><td>스크롤 위치 연동 포커스 blur</td></tr>
+  <tr><td>컨페티</td><td>1822</td><td>응모 완료 화면</td></tr>
+  <tr><td>참여 플로우</td><td>1932</td><td>링크 입력 → 파일 첨부 → 완료 (<a href="#backend">6장</a> 참조)</td></tr>
+  <tr><td>히어로 영상 재생 보장</td><td>2007</td><td>자동재생 차단 시 첫 인터랙션에서 재생</td></tr>
+  <tr><td>카운트다운</td><td>2016</td><td><code>TIMER_DEADLINE</code> 상수 참조</td></tr>
+  <tr><td>앱바 로고 페이드</td><td>2043</td><td>헤드라인과 겹치면 숨김</td></tr>
+  <tr><td>데모 공통 게이트 <code>attachCardDemo</code></td><td>2135</td><td><strong>열림+가시성(패널 60% 이상)</strong> 둘 다 참일 때만 재생. 이탈 시 정지, 복귀 시 처음부터</td></tr>
+  <tr><td>데모 1/2/3</td><td>2241 / 2316 / 2427</td><td>타이밍은 <code>W1</code>/<code>W2</code> 배열(ms). 사이클 9.2s / 11.4s / 5.4s</td></tr>
+</table></div>
+
+<h2 id="interaction">5. 인터랙션 명세 요약</h2>
+<ul>
+  <li><strong>히어로 영상</strong>: 루프 없이 1회 재생 후 마지막 프레임 홀드 (<code>hero_video_hold.mp4</code>).</li>
+  <li><strong>스크롤 어피어</strong>: 그룹 상단이 뷰포트 하단 30% 지점을 넘으면 그룹 내 <code>.reveal</code>이 <code>--d</code> 스태거로 blur-in. 새로고침 스크롤 복원 시 이미 지나친 그룹은 즉시 표시.</li>
+  <li><strong>참여 방법</strong>: 1번 카드가 <strong>마크업에서 기본 열림</strong>(<code>class="… open"</code> + <code>aria-expanded="true"</code>). 데모는 화면에 보일 때만 재생. 한 사이클 완주 시 다음 카드로 자동 진행(자동 투어), 3번에서 종료.</li>
+  <li><strong>모션 접근성</strong>: <code>prefers-reduced-motion: reduce</code>에서 <code>.reveal</code> 애니메이션 비활성.</li>
+</ul>
+
+<h2 id="backend">6. 백엔드/앱 연동 필요 지점 (현재 전부 프런트 데모)</h2>
+<div class="warn"><strong>네트워크 요청이 단 하나도 없다.</strong> 실서비스 전 반드시 연결해야 할 것들:</div>
+<ol>
+  <li><strong>카운트다운 종료 시각</strong> — <code>TIMER_DEADLINE</code>(≈2019줄). 현재 <code>null</code>이라 진입 시점부터 3시간 22분을 세는 데모 동작. 실제 마감 시각(예: <code>"2026-08-31T23:59:59+09:00"</code>)을 넣거나 서버 시간으로 대체할 것.</li>
+  <li><strong>참여 플로우 제출</strong> — 릴스 링크(<code>.flow-input</code>)와 원본 파일(<code>input[type=file]</code>, <code>video/*,image/*</code>)이 <strong>어디로도 전송되지 않는다</strong>. 파일은 <code>createObjectURL</code> 로컬 미리보기만. 확인 모달 "네" 클릭 시 완료 화면으로 넘어갈 뿐이다. 업로드 API + 유효성 검사(링크 형식, 파일 용량 제한) 필요.</li>
+  <li><strong>앱바 X 버튼</strong>(<code>.appbar .close</code>) — <strong>클릭 핸들러가 없다</strong> (플로우 모달 안의 X는 동작함). 웹뷰 닫기 브릿지 연결 필요.</li>
+  <li><strong>당첨 카운트</strong> — "0/1", "0/3" 하드코딩. 실데이터라면 API 연동.</li>
+  <li><strong>메타/공유 태그 없음</strong> — og:title/og:image/description, favicon 미설정. 프로모션 특성상 공유가 많을 테니 필수.</li>
+</ol>
+
+<h2 id="assets">7. 에셋 인벤토리 (assets/, 총 ≈18MB)</h2>
+
+<h3>사용 중 (27개)</h3>
+<p>
+히어로: <code>hero_video_hold.mp4</code>(2.2MB, CRF20 재인코딩·SSIM 0.9977) · 타이머 <code>timer-pill.svg</code> · 로고 <code>logo-1~4.svg</code> · 앱바 <code>xmark.svg</code><br />
+당첨 상품: <code>prize-hero.png</code>(@2x) · <code>prize-sugar1/2.png</code>(@3x)<br />
+참여 방법 데모: <code>story-bg/man/woman.png</code>, <code>camera-cursor.svg</code>, <code>s2-*.png</code>(5개), <code>hand.svg</code><br />
+심사 기준: <code>crit-1~4.png</code> · 심사 발표: <code>announce-bg.png</code> · 플로우: <code>chevron-left.svg</code>
+</p>
+
+<h3>미사용 (10개, 8.9MB) — 삭제 권장</h3>
+<div class="tablewrap"><table>
+  <tr><th>파일</th><th>크기</th><th>비고</th></tr>
+  <tr><td><code>hero_video.mp4</code></td><td>4.4MB</td><td>홀드 버전으로 대체됨</td></tr>
+  <tr><td><code>raw-1.png</code> / <code>raw-2.png</code></td><td>2.1MB</td><td>원본 소스</td></tr>
+  <tr><td><code>hf_20260812_…mp4</code></td><td>1.7MB</td><td>생성 원본</td></tr>
+  <tr><td><code>hero.png</code></td><td>1.0MB</td><td>미사용 (영상 poster 후보로 쓸 수는 있음)</td></tr>
+  <tr><td><code>hero-headline-1a/1b/2.svg</code></td><td>15KB</td><td>인라인 SVG 전환으로 대체됨</td></tr>
+  <tr><td><code>icon-2user-a/b.svg</code></td><td>3KB</td><td>미사용</td></tr>
+</table></div>
+<p class="dim">삭제해도 git 이력에 남아 복구 가능.</p>
+
+<h2 id="copy">8. 확인 필요 (디자인 vs 코드 카피 불일치)</h2>
+<p>참여 방법 카드 설명이 피그마 최신 텍스트와 다르다. 의도된 수정인지 확인 필요:</p>
+<div class="tablewrap"><table>
+  <tr><th>카드</th><th>코드</th><th>피그마(1897:3827/3801/3809)</th></tr>
+  <tr><td>1</td><td>"…선택지를 <strong>캡쳐</strong>해주세요."</td><td>"…선택지를 <strong>골라</strong>주세요."</td></tr>
+  <tr><td>2</td><td>"…설문캡션과 함께 <strong>릴스를</strong> 올려주세요."</td><td>"…설문캡션과 함께 올려주세요."</td></tr>
+  <tr><td>3</td><td>"…릴스 링크를 <strong>등록</strong>해주세요. 승인 후…"</td><td>"…릴스 링크를 <strong>올려</strong>주세요. 승인이 완료되면…"</td></tr>
+</table></div>
+<p>부상 카피 "슈가 5만~천개"도 표기 확인 권장.</p>
+
+<h2 id="caveats">9. 알려진 제약 / 주의</h2>
+<ul>
+  <li><strong>iOS safe-area 미처리</strong> — 홈 인디케이터 영역 <code>env(safe-area-inset-*)</code> 대응 없음. 페이지 끝이 약관이라 실害는 적지만 앱 웹뷰 삽입 시 확인.</li>
+  <li><strong>데모 타이밍 수정법</strong> — 카드 1·2는 <code>W1</code>/<code>W2</code> 배열(ms)이 진행바 세그먼트 비율과 모션 대기를 겸한다. 배열만 고치면 진행바도 함께 맞춰진다. 카드 3은 개별 <code>demoWait()</code> 값.</li>
+  <li><strong>아코디언 열림/닫힘</strong>은 <code>grid-template-rows 0fr↔1fr</code> 트랜지션. <code>height: auto</code> 트릭 불필요.</li>
+  <li><strong><code>.reveal</code>과 <code>translateX(-50%)</code> 충돌 금지</strong> — 어피어는 <code>translate</code> 속성, 센터링은 <code>left: calc(50% - …)</code> 방식을 쓴다. 기존 주석 참조.</li>
+  <li>콘솔 오류 0건, 404 에셋 0건 (2026-08-13 전수 확인).</li>
+</ul>
+
+<h2 id="qa">10. QA 체크리스트</h2>
+<ul class="checklist">
+  <li>히어로: 영상 1회 재생 후 홀드, 타이머 카운트다운, X/로고 위치</li>
+  <li>스크롤: 각 섹션 blur-in이 화면 안에서 보이는지</li>
+  <li>참여 방법: 1번 기본 열림 → 보일 때만 데모 재생 → 자동 투어 1→2→3 → 수동 클릭 시 투어 중단</li>
+  <li>화면 이탈 시 데모 정지, 복귀 시 처음부터 재생</li>
+  <li>플로우: 링크 입력 → 다음 → 파일 첨부(미리보기/재선택) → 참여하기 → 확인 모달 → 완료 컨페티 → 확인으로 닫기</li>
+  <li>뒤로가기(←)/X 버튼 각 단계 동작</li>
+  <li>iPhone SE(소형)·Pro Max(대형) 실기기 스케일 확인</li>
+  <li><code>prefers-reduced-motion</code> 켠 상태에서 콘텐츠 정상 노출</li>
+</ul>
+
+</div>
+</body>
+</html>
