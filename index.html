@@ -67,9 +67,10 @@
     width: 100%;
     height: 100%;
   }
+  /* 좌측 배치 (1897:3750) — 익스포트 실측 기준 글리프 중심 x27.5 / y23.5 */
   .appbar .close {
     position: absolute;
-    right: 16px;
+    left: 16px;
     top: 12px;
     width: 24px;
     height: 24px;
@@ -1443,93 +1444,95 @@
   <section class="steps">
     <h2 class="section-title reveal">참여 방법</h2>
 
-    <article class="step-card reveal" style="--d: 0.12s">
-      <button class="step-head" aria-expanded="false" aria-controls="step-body-1">
-        <span class="step-num">1</span>
-        <span class="step-texts">
-          <span class="t">재미있는 질문 발견하기</span>
-          <span class="d">글레이즈 드라마를 시청하면서 갑론을박이<br />있을 만한 선택지를 캡쳐해주세요.</span>
-        </span>
-        <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <div class="step-body" id="step-body-1">
-        <div class="step-body-inner">
-          <div class="step-preview">
-            <div class="demo-progress" aria-hidden="true"><i></i></div>
-            <div class="scene1-q" aria-hidden="true">아내가 다른 남자와 함께 있는 것을 목격했다.<br />어떻게 해야 할까?</div>
-            <div class="scene1-story" aria-hidden="true">
-              <img class="s-bg" src="assets/story-bg.png" alt="" />
-              <img class="s-man" src="assets/story-man.png" alt="" />
-              <div class="s-woman"><img src="assets/story-woman.png" alt="" /></div>
+    <div class="step-list">
+      <article class="step-card reveal open" style="--d: 0.12s">
+        <button class="step-head" aria-expanded="true" aria-controls="step-body-1">
+          <span class="step-num">1</span>
+          <span class="step-texts">
+            <span class="t">재미있는 질문 발견하기</span>
+            <span class="d">글레이즈 드라마를 시청하면서 갑론을박이<br />있을 만한 선택지를 캡쳐해주세요.</span>
+          </span>
+          <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="step-body" id="step-body-1">
+          <div class="step-body-inner">
+            <div class="step-preview">
+              <div class="demo-progress" aria-hidden="true"><i></i></div>
+              <div class="scene1-q" aria-hidden="true">아내가 다른 남자와 함께 있는 것을 목격했다.<br />어떻게 해야 할까?</div>
+              <div class="scene1-story" aria-hidden="true">
+                <img class="s-bg" src="assets/story-bg.png" alt="" />
+                <img class="s-man" src="assets/story-man.png" alt="" />
+                <div class="s-woman"><img src="assets/story-woman.png" alt="" /></div>
+              </div>
+              <div class="scene1-opts" aria-hidden="true">
+                <div class="opt">조용히 증거를 수집한다.</div>
+                <div class="opt">당장 가서 뒤엎는다.</div>
+              </div>
+              <div class="scene1-select" aria-hidden="true"></div>
+              <div class="scene1-cam" aria-hidden="true"><img src="assets/camera-cursor.svg" alt="" /></div>
+              <div class="scene1-flash" aria-hidden="true"></div>
             </div>
-            <div class="scene1-opts" aria-hidden="true">
-              <div class="opt">조용히 증거를 수집한다.</div>
-              <div class="opt">당장 가서 뒤엎는다.</div>
-            </div>
-            <div class="scene1-select" aria-hidden="true"></div>
-            <div class="scene1-cam" aria-hidden="true"><img src="assets/camera-cursor.svg" alt="" /></div>
-            <div class="scene1-flash" aria-hidden="true"></div>
           </div>
         </div>
-      </div>
-    </article>
+      </article>
 
-    <article class="step-card reveal" style="--d: 0.24s">
-      <button class="step-head" aria-expanded="false" aria-controls="step-body-2">
-        <span class="step-num">2</span>
-        <span class="step-texts">
-          <span class="t">인스타그램에 릴스 올리기</span>
-          <span class="d">발견한 장면을 활용하여 인스타그램에<br />설문캡션과 함께 릴스를 올려주세요.</span>
-        </span>
-        <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <div class="step-body" id="step-body-2">
-        <div class="step-body-inner">
-          <div class="step-preview">
-            <div class="demo-progress" aria-hidden="true"><i></i></div>
-            <div class="s2-screen s2-newpost" aria-hidden="true"><img src="assets/s2-newpost.png" alt="" /></div>
-            <div class="s2-screen s2-caption" aria-hidden="true">
-              <img src="assets/s2-caption-blank.png" alt="" />
-              <img class="hint" src="assets/s2-caption-empty.png" alt="" />
-              <img class="typed" src="assets/s2-caption.png" alt="" />
+      <article class="step-card reveal" style="--d: 0.24s">
+        <button class="step-head" aria-expanded="false" aria-controls="step-body-2">
+          <span class="step-num">2</span>
+          <span class="step-texts">
+            <span class="t">인스타그램에 릴스 올리기</span>
+            <span class="d">발견한 장면을 활용하여 인스타그램에<br />설문캡션과 함께 릴스를 올려주세요.</span>
+          </span>
+          <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="step-body" id="step-body-2">
+          <div class="step-body-inner">
+            <div class="step-preview">
+              <div class="demo-progress" aria-hidden="true"><i></i></div>
+              <div class="s2-screen s2-newpost" aria-hidden="true"><img src="assets/s2-newpost.png" alt="" /></div>
+              <div class="s2-screen s2-caption" aria-hidden="true">
+                <img src="assets/s2-caption-blank.png" alt="" />
+                <img class="hint" src="assets/s2-caption-empty.png" alt="" />
+                <img class="typed" src="assets/s2-caption.png" alt="" />
+              </div>
+              <div class="s2-poll" aria-hidden="true">
+                <img src="assets/s2-poll.png" alt="" />
+                <img class="result" src="assets/s2-poll-result.png" alt="" />
+              </div>
+              <div class="s2-hand s2-hand-poll" aria-hidden="true"><img src="assets/hand.svg" alt="" /></div>
+              <div class="s2-hand s2-hand-done" aria-hidden="true"><img src="assets/hand.svg" alt="" /></div>
             </div>
-            <div class="s2-poll" aria-hidden="true">
-              <img src="assets/s2-poll.png" alt="" />
-              <img class="result" src="assets/s2-poll-result.png" alt="" />
-            </div>
-            <div class="s2-hand s2-hand-poll" aria-hidden="true"><img src="assets/hand.svg" alt="" /></div>
-            <div class="s2-hand s2-hand-done" aria-hidden="true"><img src="assets/hand.svg" alt="" /></div>
           </div>
         </div>
-      </div>
-    </article>
+      </article>
 
-    <article class="step-card reveal" style="--d: 0.36s">
-      <button class="step-head" aria-expanded="false" aria-controls="step-body-3">
-        <span class="step-num">3</span>
-        <span class="step-texts">
-          <span class="t">이벤트 응모하기</span>
-          <span class="d">참여하기를 통해 릴스 링크를 등록해주세요.<br />승인 후 참가 상품을 먼저 받을 수 있어요.</span>
-        </span>
-        <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
-          <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </button>
-      <div class="step-body" id="step-body-3">
-        <div class="step-body-inner">
-          <div class="step-preview">
-            <div class="demo-progress" aria-hidden="true"><i></i></div>
-            <canvas class="step-confetti" aria-hidden="true"></canvas>
-            <div class="demo-btn" aria-hidden="true">참여하기</div>
-            <div class="demo-hand" aria-hidden="true"><img src="assets/hand.svg" alt="" /></div>
+      <article class="step-card reveal" style="--d: 0.36s">
+        <button class="step-head" aria-expanded="false" aria-controls="step-body-3">
+          <span class="step-num">3</span>
+          <span class="step-texts">
+            <span class="t">이벤트 응모하기</span>
+            <span class="d">참여하기를 통해 릴스 링크를 등록해주세요.<br />승인 후 참가 상품을 먼저 받을 수 있어요.</span>
+          </span>
+          <svg class="step-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M5 8l5 5 5-5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="step-body" id="step-body-3">
+          <div class="step-body-inner">
+            <div class="step-preview">
+              <div class="demo-progress" aria-hidden="true"><i></i></div>
+              <canvas class="step-confetti" aria-hidden="true"></canvas>
+              <div class="demo-btn" aria-hidden="true">참여하기</div>
+              <div class="demo-hand" aria-hidden="true"><img src="assets/hand.svg" alt="" /></div>
+            </div>
           </div>
         </div>
-      </div>
-    </article>
+      </article>
+    </div>
   </section>
 
   <!-- 심사 기준 (가로 슬라이더 캐러셀) -->
@@ -1723,32 +1726,29 @@
     });
   });
 
-  // 스크롤 어피어 — 섹션 단위 트리거, 섹션 안의 요소들은 --d 스태거로 함께 blur-in (1회성)
+  // 스크롤 어피어 — 그룹 단위 트리거, 그룹 안의 요소들은 --d 스태거로 함께 blur-in (1회성)
   const io = new IntersectionObserver(
     (entries) => {
       entries.forEach((entry) => {
-        // 이미 지나친 섹션(새로고침 후 스크롤 복원 등)도 바로 표시
+        // 이미 지나친 그룹(새로고침 후 스크롤 복원 등)도 바로 표시
         const passed = entry.boundingClientRect.bottom < (entry.rootBounds ? entry.rootBounds.top : 0);
         if (entry.isIntersecting || passed) {
-          entry.target.querySelectorAll(".reveal").forEach((el) => el.classList.add("in"));
-          io.unobserve(entry.target);
-
-          // 참여 방법: 카드 전체 blur-in 완료 후 1번 카드 자동 오픈
-          if (entry.target.classList.contains("steps")) {
-            const firstCard = entry.target.querySelector(".step-card");
-            const wait = passed ? 0 : 1000; // 카드들이 거의 자리 잡는 시점에 살짝 겹쳐서 오픈
-            setTimeout(() => {
-              firstCard.classList.add("open");
-              firstCard.querySelector(".step-head").setAttribute("aria-expanded", "true");
-            }, wait);
-          }
+          const el = entry.target;
+          if (el.classList.contains("reveal")) el.classList.add("in"); // 그룹 자체가 대상인 경우(타이틀)
+          el.querySelectorAll(".reveal").forEach((r) => r.classList.add("in"));
+          io.unobserve(el);
         }
       });
     },
-    // 섹션 상단이 뷰포트 하단에서 30% 올라온 지점을 넘어야 발화
+    // 그룹 상단이 뷰포트 하단에서 30% 올라온 지점을 넘어야 발화
     { threshold: 0, rootMargin: "0px 0px -30% 0px" }
   );
-  document.querySelectorAll(".prizes, .steps, .criteria, .announce").forEach((sec) => io.observe(sec));
+  // 참여 방법은 카드가 열리면 섹션 높이가 뷰포트를 넘어서므로 한 덩어리로 다룰 수 없다.
+  // 게다가 .steps의 상단 패딩 180px이 섹션 박스에 포함돼, 섹션을 관찰하면 카드가 아직
+  // 화면 밖일 때 발화한다. 타이틀과 카드 묶음을 각자 제 위치에서 따로 발화시킨다.
+  document
+    .querySelectorAll(".prizes, .criteria, .announce, .steps .section-title, .step-list")
+    .forEach((group) => io.observe(group));
 
   // 심사 기준 캐러셀 — 스크롤 위치에 연동해 포커스 카드만 선명, 나머지는 blur in/out (1900:599)
   (function () {
@@ -2169,6 +2169,7 @@
     if (!card) return;
     const body = card.querySelector(".step-body");
     let gen = 0; // 실행 세대 — 닫히거나 다시 열리면 증가해 진행 중이던 루프를 무효화
+    let visible = false; // 데모 패널이 화면에 충분히 들어와 있는지
 
     // 열림 트랜지션(grid-template-rows 0.45s)이 끝나는 시점 — 이벤트가 안 잡히면 타임아웃으로 대체
     function openTransitionEnd() {
@@ -2187,7 +2188,7 @@
     }
 
     async function loop(my) {
-      const alive = () => my === gen && card.classList.contains("open");
+      const alive = () => my === gen && card.classList.contains("open") && visible;
       while (alive()) {
         reset();
         await runCycle(alive);
@@ -2197,10 +2198,16 @@
       reset();
     }
 
-    async function onOpen() {
+    // 시작 조건은 "열림"과 "보임"이 모두 참일 때. 어느 쪽으로 진입하든 같은 경로를 탄다.
+    async function start() {
+      if (!card.classList.contains("open") || !visible) return;
       const my = ++gen;
       await openTransitionEnd();
-      if (my === gen && card.classList.contains("open")) loop(my);
+      if (my === gen && card.classList.contains("open") && visible) loop(my);
+    }
+    function stop() {
+      gen++; // 진행 중이던 루프의 alive()를 깨뜨린다
+      reset();
     }
 
     // class 변경은 blur-in(.in) 등으로도 발생하므로, open 상태가 실제로 바뀔 때만 반응
@@ -2209,11 +2216,26 @@
       const isOpen = card.classList.contains("open");
       if (isOpen === wasOpen) return;
       wasOpen = isOpen;
-      if (isOpen) onOpen();
-      else { gen++; reset(); }               // 닫히면 즉시 중단 + 초기화
+      if (isOpen) start();
+      else stop();                           // 닫히면 즉시 중단 + 초기화
     }).observe(card, { attributes: true, attributeFilter: ["class"] });
 
-    if (wasOpen) onOpen();
+    // 패널이 화면 밖이면 재생하지 않는다 — 아무도 안 보는 동안 모션이 흘러가 버리는 걸 막는다.
+    // 되돌아오면 처음부터 다시 재생한다(중간부터 잇지 않는다): 사이클이 5~11초로 짧아
+    // 이어 붙이면 맥락 없는 장면부터 보이게 된다.
+    const panel = card.querySelector(".step-preview");
+    new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          const now = e.intersectionRatio >= 0.6;
+          if (now === visible) return;
+          visible = now;
+          if (visible) start();
+          else stop();
+        });
+      },
+      { threshold: [0, 0.6, 1] }
+    ).observe(panel);
   }
 
   // ===== 1번 카드 데모 — 지문 blur-in → 슬라이드 퇴장 → 폰 화면 → 선택지 → 캡처 드래그 =====
